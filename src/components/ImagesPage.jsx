@@ -56,6 +56,14 @@ function ImagesPage() {
         } else {
           setImages([]);
         }
+      } else if (response.status === 403 || response.status === 401) {
+        // Token hết hạn
+        console.error('Token hết hạn hoặc không có quyền truy cập');
+        toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        setTimeout(() => {
+          localStorage.clear();
+          window.location.href = `/${userId}/unlock`;
+        }, 2000);
       } else {
         console.error('Failed to load images:', response.statusText);
         toast.error('Không thể tải ảnh');

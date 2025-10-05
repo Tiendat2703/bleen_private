@@ -24,6 +24,7 @@ function MessageSection() {
   useEffect(() => {
     // Load existing data from backend
     loadPostFromBackend();
+    loadVoiceFromBackend();
   }, [userId, token]);
 
   const loadPostFromBackend = async () => {
@@ -40,11 +41,32 @@ function MessageSection() {
         const data = await response.json();
         if (data.success && data.data) {
           setMessage(data.data.content || '');
-          // Note: Audio sẽ được lưu riêng trong video hoặc file khác
         }
       }
     } catch (err) {
       console.error('Error loading post:', err);
+    }
+  };
+
+  const loadVoiceFromBackend = async () => {
+    if (!userId || !token) return;
+
+    try {
+      const response = await fetch(`/api/voice/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          setAudioUrl(data.data.file_url);
+          setRecordingTime(data.data.duration || 0);
+        }
+      }
+    } catch (err) {
+      console.error('Error loading voice:', err);
     }
   };
 
@@ -117,12 +139,42 @@ function MessageSection() {
     }
   };
 
-  const handleUndo = () => {
-    if (window.confirm('Bạn có chắc muốn xóa?')) {
-      setMessage('');
-      setAudioBlob(null);
-      setAudioUrl(null);
-      setRecordingTime(0);
+  const handleUndo = async () => {
+    if (window.confirm('Bạn có chắc muốn xóa thông điệp và voice?')) {
+      setError('');
+      setSuccess('');
+      setIsLoading(true);
+      
+      try {
+        // Xóa post (message)
+        const postResponse = await fetch(`/api/posts/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        // Xóa voice
+        const voiceResponse = await fetch(`/api/voice/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (postResponse.ok || voiceResponse.ok) {
+          toast.success('Xóa thành công');
+          setMessage('');
+          setAudioBlob(null);
+          setAudioUrl(null);
+          setRecordingTime(0);
+        }
+      } catch (err) {
+        console.error('Delete error:', err);
+        toast.error('Lỗi khi xóa: ' + err.message);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -130,39 +182,84 @@ function MessageSection() {
     setError('');
     setSuccess('');
 
-    // Validate: must have message text
-    if (!message || message.trim().length === 0) {
-      setError('Vui lòng nhập tin nhắn');
+    // Validate: must have message text or audio
+    if ((!message || message.trim().length === 0) && !audioBlob && !audioUrl) {
+      setError('Vui lòng nhập tin nhắn hoặc ghi âm');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Save message to backend using posts API
-      const response = await fetch(`/api/posts/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          content: message,
-          type: 'text'
-        })
-      });
+      let successCount = 0;
+      let totalTasks = 0;
 
-      const data = await response.json();
+      // 1. Save message text if exists
+      if (message && message.trim().length > 0) {
+        totalTasks++;
+        const response = await fetch(`/api/posts/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            content: message,
+            type: 'text'
+          })
+        });
 
-      if (response.ok && data.success) {
-        toast.success(data.isUpdate ? 'Cập nhật thành công' : 'Lưu thành công');
+        const data = await response.json();
+        if (response.ok && data.success) {
+          successCount++;
+        } else {
+          throw new Error(data.message || 'Lưu message thất bại');
+        }
+      }
+
+      // 2. Upload voice if recorded
+      if (audioBlob) {
+        totalTasks++;
+        const formData = new FormData();
+        
+        // Convert webm to a file with proper extension
+        const audioFile = new File([audioBlob], `voice_${Date.now()}.webm`, { 
+          type: 'audio/webm' 
+        });
+        
+        formData.append('voice', audioFile);
+        formData.append('userId', userId);
+        formData.append('duration', recordingTime.toString());
+
+        const voiceResponse = await fetch('/api/upload/voice', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+
+        const voiceData = await voiceResponse.json();
+        if (voiceResponse.ok && voiceData.success) {
+          successCount++;
+          setAudioUrl(voiceData.data.url);
+        } else {
+          throw new Error(voiceData.message || 'Upload voice thất bại');
+        }
+      }
+
+      if (successCount > 0) {
+        toast.success(`Lưu thành công ${successCount}/${totalTasks} phần`);
         setSuccess('Đã lưu thông điệp thành công');
-        setTimeout(() => setSuccess(''), 3000);
+        
+        // Clear local audio blob sau khi upload
+        setAudioBlob(null);
         
         // Reload data
         await loadPostFromBackend();
-      } else {
-        throw new Error(data.message || 'Lưu thất bại');
+        await loadVoiceFromBackend();
+        
+        setTimeout(() => setSuccess(''), 3000);
       }
     } catch (err) {
       console.error('Save error:', err);

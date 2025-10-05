@@ -244,7 +244,7 @@ function generateAccessToken(user) {
   return jwt.sign(
     { userId: user.user_id, email: user.email },
     process.env.JWT_SECRET,
-    { expiresIn: '2h' }
+    { expiresIn: '7d' } // 7 ngày thay vì 2 giờ
   );
 }
 
@@ -1168,6 +1168,268 @@ app.delete('/api/video/:userId', authenticateUser, checkOwnership, async (req, r
     });
   }
 });
+
+// =============================================================================
+// VOICE ENDPOINTS
+// =============================================================================
+
+// Upload voice
+app.post('/api/upload/voice', uploadLimiter, authenticateUser, async (req, res) => {
+  const voiceUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB max
+    },
+    fileFilter: (req, file, cb) => {
+      console.log('Received voice file:', file.originalname);
+      console.log('MIME type:', file.mimetype);
+      
+      const allowedMimes = [
+        'audio/mpeg',
+        'audio/mp3',
+        'audio/wav',
+        'audio/ogg',
+        'audio/webm',
+        'audio/aac',
+        'audio/m4a',
+        'audio/x-m4a',
+        'application/octet-stream'
+      ];
+      
+      // Kiểm tra extension
+      const ext = file.originalname.toLowerCase().split('.').pop();
+      const allowedExts = ['mp3', 'wav', 'ogg', 'webm', 'aac', 'm4a', 'mpeg'];
+      
+      if (allowedMimes.includes(file.mimetype) && allowedExts.includes(ext)) {
+        console.log('✅ Voice file accepted');
+        cb(null, true);
+      } else {
+        console.log('❌ Voice file rejected');
+        cb(new Error(`File không hợp lệ. MIME: ${file.mimetype}, Ext: ${ext}`), false);
+      }
+    }
+  }).single('voice');
+
+  voiceUpload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({
+        success: false,
+        message: err.message
+      });
+    }
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'Không có file voice được upload'
+        });
+      }
+
+      // Validate userId
+      if (!req.body.userId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Thiếu userId'
+        });
+      }
+
+      const userId = validateUserId(req.body.userId);
+
+      // Kiểm tra ownership
+      if (req.user.role !== 'admin' && req.user.userId !== userId) {
+        return res.status(403).json({
+          success: false,
+          message: 'Không có quyền upload voice cho user này'
+        });
+      }
+
+      // Kiểm tra xem user đã có voice chưa
+      const { data: existingVoice } = await supabase
+        .from('user_voices')
+        .select('id, file_path')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      // Nếu đã có voice, xóa voice cũ
+      if (existingVoice) {
+        await supabase.storage
+          .from('user-voices')
+          .remove([existingVoice.file_path]);
+
+        await supabase
+          .from('user_voices')
+          .delete()
+          .eq('id', existingVoice.id);
+      }
+
+      const fileName = generateFileName(req.file.originalname);
+      const filePath = `users/${userId}/voices/${fileName}`;
+
+      // Upload voice
+      const { error: uploadError } = await supabase.storage
+        .from('user-voices')
+        .upload(filePath, req.file.buffer, {
+          contentType: req.file.mimetype,
+          cacheControl: '3600'
+        });
+
+      if (uploadError) {
+        throw new Error(`Upload failed: ${uploadError.message}`);
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('user-voices')
+        .getPublicUrl(filePath);
+
+      const metadata = {
+        user_id: userId,
+        file_name: sanitizeInput(req.file.originalname, 255),
+        file_path: filePath,
+        file_url: urlData.publicUrl,
+        file_size: req.file.size,
+        file_type: req.file.mimetype,
+        duration: req.body.duration ? parseFloat(req.body.duration) : null
+      };
+
+      const { data: dbData, error: dbError } = await supabase
+        .from('user_voices')
+        .insert([metadata])
+        .select()
+        .single();
+
+      if (dbError) {
+        console.error('Database save failed:', dbError);
+        throw new Error('Lưu metadata thất bại');
+      }
+
+      await logAudit(userId, 'voice_uploaded', req, { voiceId: dbData.id });
+
+      res.json({
+        success: true,
+        message: 'Upload voice thành công',
+        data: {
+          id: dbData.id,
+          userId: userId,
+          url: urlData.publicUrl,
+          path: filePath,
+          size: req.file.size,
+          type: req.file.mimetype,
+          duration: metadata.duration,
+          originalName: req.file.originalname
+        }
+      });
+
+    } catch (error) {
+      console.error('Voice upload error:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message,
+        error: error.message
+      });
+    }
+  });
+});
+
+// Lấy voice của user
+app.get('/api/voice/:userId', authenticateUser, checkOwnership, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const validUserId = validateUserId(userId);
+
+    const { data, error } = await supabase
+      .from('user_voices')
+      .select('*')
+      .eq('user_id', validUserId)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    res.json({
+      success: true,
+      data: data || null,
+      userId: validUserId
+    });
+
+  } catch (error) {
+    console.error('Get voice error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Không thể lấy voice',
+      error: error.message
+    });
+  }
+});
+
+// Xóa voice
+app.delete('/api/voice/:userId', authenticateUser, checkOwnership, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const validUserId = validateUserId(userId);
+
+    // Lấy thông tin voice
+    const { data: voice, error: fetchError } = await supabase
+      .from('user_voices')
+      .select('*')
+      .eq('user_id', validUserId)
+      .maybeSingle();
+
+    if (fetchError) throw fetchError;
+
+    if (!voice) {
+      return res.status(404).json({
+        success: false,
+        message: 'Voice không tồn tại'
+      });
+    }
+
+    // Kiểm tra quyền sở hữu
+    if (voice.user_id !== req.user.userId && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Không có quyền xóa voice này'
+      });
+    }
+
+    // Xóa file từ storage
+    const { error: storageError } = await supabase.storage
+      .from('user-voices')
+      .remove([voice.file_path]);
+
+    if (storageError) {
+      console.warn('Storage delete warning:', storageError);
+    }
+
+    // Xóa record từ database
+    const { error: dbError } = await supabase
+      .from('user_voices')
+      .delete()
+      .eq('user_id', validUserId);
+
+    if (dbError) throw dbError;
+
+    await logAudit(validUserId, 'voice_deleted', req, { voiceId: voice.id });
+
+    res.json({
+      success: true,
+      message: 'Đã xóa voice thành công',
+      deletedVoice: {
+        id: voice.id,
+        userId: voice.user_id,
+        fileName: voice.file_name
+      }
+    });
+
+  } catch (error) {
+    console.error('Delete voice error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Xóa voice thất bại',
+      error: error.message
+    });
+  }
+});
+
 // =============================================================================
 // POST ENDPOINTS
 // =============================================================================
@@ -1963,10 +2225,26 @@ const startServer = (port) => {
     console.log(`   GET    /api/image/:imageId      # 1 ảnh theo ID`);
     console.log(`   DELETE /api/images/:imageId     # Xóa ảnh`);
     
+    console.log(`\n🎬 VIDEO APIs (requires user token):`);
+    console.log(`   POST   /api/upload/video        # Upload video (max 100MB)`);
+    console.log(`   GET    /api/video/:userId       # Lấy video của user`);
+    console.log(`   DELETE /api/video/:userId       # Xóa video`);
+    
+    console.log(`\n🎤 VOICE APIs (requires user token):`);
+    console.log(`   POST   /api/upload/voice        # Upload voice (max 10MB)`);
+    console.log(`   GET    /api/voice/:userId       # Lấy voice của user`);
+    console.log(`   DELETE /api/voice/:userId       # Xóa voice`);
+    
     console.log(`\n📄 POST APIs (requires user token):`);
     console.log(`   GET    /api/posts/:userId       # Lấy post`);
     console.log(`   POST   /api/posts/:userId       # Tạo/update post`);
     console.log(`   DELETE /api/posts/:userId       # Xóa post`);
+    
+    console.log(`\n👥 BENEFICIARY APIs (requires user token):`);
+    console.log(`   GET    /api/beneficiaries/:userId      # Lấy thông tin beneficiaries`);
+    console.log(`   POST   /api/beneficiaries              # Tạo/update beneficiary`);
+    console.log(`   POST   /api/beneficiaries/avatar      # Upload avatar cho beneficiary`);
+    console.log(`   DELETE /api/beneficiaries/:userId/:type # Xóa beneficiary`);
     
     console.log(`\n🔧 UTILS:`);
     console.log(`   GET    /api/stats/:userId       # Thống kê (requires user token)`);
