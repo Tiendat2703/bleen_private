@@ -16,6 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const NavigateWithUserId = () => {
   const { userId } = useParams();
+  console.log('NavigateWithUserId - userId:', userId);
   return <Navigate to={`/${userId}/unlock`} replace />;
 };
 
