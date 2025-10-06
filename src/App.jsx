@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute';
@@ -14,9 +15,48 @@ import AdminPage from './components/AdminPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Error Boundary Component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('App Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Có lỗi xảy ra</h1>
+            <p className="text-gray-600 mb-4">Vui lòng thử lại sau</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Tải lại trang
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const NavigateWithUserId = () => {
   const { userId } = useParams();
   console.log('NavigateWithUserId - userId:', userId);
+  console.log('Current URL:', window.location.href);
+  console.log('Redirecting to:', `/${userId}/unlock`);
   return <Navigate to={`/${userId}/unlock`} replace />;
 };
 
@@ -79,22 +119,24 @@ const AppRoutes = () => {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <AppRoutes />
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </AuthProvider>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <AppRoutes />
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 
