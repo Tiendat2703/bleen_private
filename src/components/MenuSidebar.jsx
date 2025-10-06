@@ -24,124 +24,134 @@ export default function MenuSidebar({ isOpen, onClose }) {
       />
 
       {/* Sidebar */}
-      <div className="fixed top-0 right-0 h-full w-[288px] bg-[#f4fff8] z-50 shadow-2xl transform transition-transform duration-300 ease-in-out" data-name="Thanh menu" data-node-id="67:62">
+      <div className="fixed top-0 right-0 h-full w-[288px] sm:w-[320px] md:w-[350px] bg-[#f4fff8] z-50 shadow-2xl transform transition-transform duration-300 ease-in-out" data-name="Thanh menu" data-node-id="67:62">
         {/* Background */}
-        <div className="absolute bg-[#f4fff8] h-[852px] left-0 top-0 w-[288px]" data-name="Nền menu" data-node-id="0:1271" />
+        <div className="absolute bg-[#f4fff8] h-full left-0 top-0 w-full" data-name="Nền menu" data-node-id="0:1271" />
         
         {/* Logo */}
-        <div className="absolute size-[163px] top-[48px] translate-x-[-50%] left-1/2" data-name="Logo chính" data-node-id="0:1282">
+        <div className="absolute size-[120px] sm:size-[140px] md:size-[163px] top-[32px] sm:top-[40px] md:top-[48px] translate-x-[-50%] left-1/2" data-name="Logo chính" data-node-id="0:1282">
           <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full" src={logoChinh} />
         </div>
 
         {/* Menu Items */}
-        <div className="relative">
+        <div className="relative pt-[200px] sm:pt-[220px] md:pt-[240px] px-4 sm:px-6 md:px-8">
           {/* TRANG CHỦ */}
-          <button 
-            onClick={() => handleNavigation('home')}
-            className="absolute flex flex-col h-[28px] justify-center top-[271px] translate-y-[-50%] w-[162px] left-1/2 translate-x-[-80px] hover:opacity-70 transition-opacity cursor-pointer" 
-            data-node-id="0:1272"
-            style={{
-              color: '#17B3C1',
-              fontFamily: 'Coiny',
-              fontSize: '20px',
-              fontStyle: 'normal',
-              fontWeight: '400',
-              lineHeight: 'normal'
-            }}
-          >
-            <p>TRANG CHỦ</p>
-          </button>
-          <div className="absolute h-0 left-[44px] top-[306px] w-[200px]" data-node-id="0:1273">
-            <div className="absolute inset-[-1px_-0.5%]">
-              <img alt="" className="block max-w-none size-full" src={line1} />
+          <div className="mb-6 sm:mb-8 md:mb-10">
+            <button 
+              onClick={() => handleNavigation('home')}
+              className="w-full flex flex-col h-[24px] sm:h-[26px] md:h-[28px] justify-center hover:opacity-70 transition-opacity cursor-pointer" 
+              data-node-id="0:1272"
+              style={{
+                color: '#17B3C1',
+                fontFamily: 'Coiny',
+                fontSize: '16px',
+                fontStyle: 'normal',
+                fontWeight: '400',
+                lineHeight: 'normal'
+              }}
+            >
+              <p className="text-center">TRANG CHỦ</p>
+            </button>
+            <div className="mt-2 h-0 w-full" data-node-id="0:1273">
+              <div className="w-full h-full">
+                <img alt="" className="block w-full h-full object-contain" src={line1} />
+              </div>
             </div>
           </div>
 
           {/* HÌNH ẢNH */}
-          <button 
-            onClick={() => handleNavigation('images')}
-            className="absolute flex flex-col h-[28px] justify-center top-[378px] translate-y-[-50%] w-[173px] left-1/2 translate-x-[-85px] hover:opacity-70 transition-opacity cursor-pointer" 
-            data-node-id="0:1274"
-            style={{
-              color: '#17B3C1',
-              fontFamily: 'Coiny',
-              fontSize: '20px',
-              fontStyle: 'normal',
-              fontWeight: '400',
-              lineHeight: 'normal'
-            }}
-          >
-            <p>HÌNH ẢNH</p>
-          </button>
-          <div className="absolute h-0 left-[44px] top-[412px] w-[200px]" data-node-id="0:1275">
-            <div className="absolute inset-[-1px_-0.5%]">
-              <img alt="" className="block max-w-none size-full" src={line1} />
+          <div className="mb-6 sm:mb-8 md:mb-10">
+            <button 
+              onClick={() => handleNavigation('images')}
+              className="w-full flex flex-col h-[24px] sm:h-[26px] md:h-[28px] justify-center hover:opacity-70 transition-opacity cursor-pointer" 
+              data-node-id="0:1274"
+              style={{
+                color: '#17B3C1',
+                fontFamily: 'Coiny',
+                fontSize: '16px',
+                fontStyle: 'normal',
+                fontWeight: '400',
+                lineHeight: 'normal'
+              }}
+            >
+              <p className="text-center">HÌNH ẢNH</p>
+            </button>
+            <div className="mt-2 h-0 w-full" data-node-id="0:1275">
+              <div className="w-full h-full">
+                <img alt="" className="block w-full h-full object-contain" src={line1} />
+              </div>
             </div>
           </div>
 
           {/* VIDEO */}
-          <button 
-            onClick={() => handleNavigation('video')}
-            className="absolute flex flex-col h-[28px] justify-center top-[483px] translate-y-[-50%] w-[183px] left-1/2 translate-x-[-92px] hover:opacity-70 transition-opacity cursor-pointer" 
-            data-node-id="0:1276"
-            style={{
-              color: '#17B3C1',
-              fontFamily: 'Coiny',
-              fontSize: '20px',
-              fontStyle: 'normal',
-              fontWeight: '400',
-              lineHeight: 'normal'
-            }}
-          >
-            <p>VIDEO</p>
-          </button>
-          <div className="absolute h-0 left-[44px] top-[517px] w-[200px]" data-node-id="0:1277">
-            <div className="absolute inset-[-1px_-0.5%]">
-              <img alt="" className="block max-w-none size-full" src={line1} />
+          <div className="mb-6 sm:mb-8 md:mb-10">
+            <button 
+              onClick={() => handleNavigation('video')}
+              className="w-full flex flex-col h-[24px] sm:h-[26px] md:h-[28px] justify-center hover:opacity-70 transition-opacity cursor-pointer" 
+              data-node-id="0:1276"
+              style={{
+                color: '#17B3C1',
+                fontFamily: 'Coiny',
+                fontSize: '16px',
+                fontStyle: 'normal',
+                fontWeight: '400',
+                lineHeight: 'normal'
+              }}
+            >
+              <p className="text-center">VIDEO</p>
+            </button>
+            <div className="mt-2 h-0 w-full" data-node-id="0:1277">
+              <div className="w-full h-full">
+                <img alt="" className="block w-full h-full object-contain" src={line1} />
+              </div>
             </div>
           </div>
 
           {/* THÔNG ĐIỆP */}
-          <button 
-            onClick={() => handleNavigation('messages')}
-            className="absolute flex flex-col h-[28px] justify-center top-[588px] translate-y-[-50%] w-[162px] left-1/2 translate-x-[-80px] hover:opacity-70 transition-opacity cursor-pointer" 
-            data-node-id="0:1278"
-            style={{
-              color: '#17B3C1',
-              fontFamily: 'Coiny',
-              fontSize: '20px',
-              fontStyle: 'normal',
-              fontWeight: '400',
-              lineHeight: 'normal'
-            }}
-          >
-            <p>THÔNG ĐIỆP</p>
-          </button>
-          <div className="absolute h-0 left-[44px] top-[622px] w-[200px]" data-node-id="0:1279">
-            <div className="absolute inset-[-1px_-0.5%]">
-              <img alt="" className="block max-w-none size-full" src={line1} />
+          <div className="mb-6 sm:mb-8 md:mb-10">
+            <button 
+              onClick={() => handleNavigation('messages')}
+              className="w-full flex flex-col h-[24px] sm:h-[26px] md:h-[28px] justify-center hover:opacity-70 transition-opacity cursor-pointer" 
+              data-node-id="0:1278"
+              style={{
+                color: '#17B3C1',
+                fontFamily: 'Coiny',
+                fontSize: '16px',
+                fontStyle: 'normal',
+                fontWeight: '400',
+                lineHeight: 'normal'
+              }}
+            >
+              <p className="text-center">THÔNG ĐIỆP</p>
+            </button>
+            <div className="mt-2 h-0 w-full" data-node-id="0:1279">
+              <div className="w-full h-full">
+                <img alt="" className="block w-full h-full object-contain" src={line1} />
+              </div>
             </div>
           </div>
 
           {/* CÀI ĐẶT */}
-          <button 
-            onClick={() => handleNavigation('settings')}
-            className="absolute flex flex-col h-[29px] justify-center top-[694.5px] translate-y-[-50%] w-[183px] left-1/2 translate-x-[-90px] hover:opacity-70 transition-opacity cursor-pointer" 
-            data-node-id="0:1280"
-            style={{
-              color: '#17B3C1',
-              fontFamily: 'Coiny',
-              fontSize: '20px',
-              fontStyle: 'normal',
-              fontWeight: '400',
-              lineHeight: 'normal'
-            }}
-          >
-            <p>CÀI ĐẶT</p>
-          </button>
-          <div className="absolute h-0 left-[44px] top-[729px] w-[200px]" data-node-id="0:1281">
-            <div className="absolute inset-[-1px_-0.5%]">
-              <img alt="" className="block max-w-none size-full" src={line1} />
+          <div className="mb-6 sm:mb-8 md:mb-10">
+            <button 
+              onClick={() => handleNavigation('settings')}
+              className="w-full flex flex-col h-[24px] sm:h-[26px] md:h-[28px] justify-center hover:opacity-70 transition-opacity cursor-pointer" 
+              data-node-id="0:1280"
+              style={{
+                color: '#17B3C1',
+                fontFamily: 'Coiny',
+                fontSize: '16px',
+                fontStyle: 'normal',
+                fontWeight: '400',
+                lineHeight: 'normal'
+              }}
+            >
+              <p className="text-center">CÀI ĐẶT</p>
+            </button>
+            <div className="mt-2 h-0 w-full" data-node-id="0:1281">
+              <div className="w-full h-full">
+                <img alt="" className="block w-full h-full object-contain" src={line1} />
+              </div>
             </div>
           </div>
         </div>
