@@ -98,11 +98,14 @@ export default function HomeAfterUnlock() {
           const position5 = images.find(img => img.position === 5);
           const position3 = images.find(img => img.position === 3);
 
-          setThumbnailImages({
+          const thumbnails = {
             position1: position1?.file_url || null,
             position5: position5?.file_url || null,
             position3: position3?.file_url || null
-          });
+          };
+          
+          console.log('Thumbnail images found:', thumbnails);
+          setThumbnailImages(thumbnails);
         }
       }
     } catch (err) {

@@ -52,22 +52,25 @@ const ImagesPage = () => {
 
       if (response.ok) {
         if (data.success && data.data) {
-          // Sort by position (1-9) to display in correct frame order
+          // Sort by position (1-7) to display in correct frame order
           const sortedImages = data.data
             .filter(img => img.position !== null) // Only show images with position
             .sort((a, b) => a.position - b.position);
           
-          // Map backend images to frame format
+          console.log('Sorted images by position:', sortedImages);
+          
+          // Map backend images to frame format by position (1-7)
           const frameImages = {
-            frame1: sortedImages[0]?.file_url || '',
-            frame2: sortedImages[1]?.file_url || '',
-            frame3: sortedImages[2]?.file_url || '',
-            frame4: sortedImages[3]?.file_url || '',
-            frame5: sortedImages[4]?.file_url || '',
-            frame6: sortedImages[5]?.file_url || '',
-            frame7: sortedImages[6]?.file_url || ''
+            frame1: sortedImages.find(img => img.position === 1)?.file_url || '',
+            frame2: sortedImages.find(img => img.position === 2)?.file_url || '',
+            frame3: sortedImages.find(img => img.position === 3)?.file_url || '',
+            frame4: sortedImages.find(img => img.position === 4)?.file_url || '',
+            frame5: sortedImages.find(img => img.position === 5)?.file_url || '',
+            frame6: sortedImages.find(img => img.position === 6)?.file_url || '',
+            frame7: sortedImages.find(img => img.position === 7)?.file_url || ''
           };
           
+          console.log('Mapped frame images:', frameImages);
           setImages(frameImages);
         } else {
           setImages({
