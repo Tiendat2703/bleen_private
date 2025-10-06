@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../../utils/api';
 import uploadIcon from '../../images/Setting Page/Untitled_icon/icon-park_upload-picture.svg';
 
 function ImageUploadSection() {
@@ -163,15 +164,13 @@ function ImageUploadSection() {
       formData.append('userId', userId);
       formData.append('positions', JSON.stringify(availablePositions.slice(0, imageFiles.length)));
 
-      const response = await fetch('/api/upload/multiple', {
+      const { response, data } = await apiCall('/api/upload/multiple', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
         },
         body: formData
       });
-
-      const data = await response.json();
 
       if (response.ok && data.success) {
         toast.success(`Upload thành công ${data.data.successful.length}/${data.data.total} ảnh`);

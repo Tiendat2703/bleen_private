@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../../utils/api';
 import editIcon from '../../images/Setting Page/Untitled_icon/solar_pen-outline.svg';
 
 function InfoSection() {
@@ -144,7 +145,7 @@ function InfoSection() {
           formData.append('userId', userId);
           formData.append('type', 'primary');
 
-          const avatarResponse = await fetch('/api/beneficiaries/avatar', {
+          const { response: avatarResponse, data: avatarData } = await apiCall('/api/beneficiaries/avatar', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`
@@ -153,13 +154,12 @@ function InfoSection() {
           });
 
           if (avatarResponse.ok) {
-            const avatarData = await avatarResponse.json();
             avatarUrl = avatarData.data.avatarUrl;
           }
         }
 
         // Save beneficiary info
-        const response = await fetch('/api/beneficiaries', {
+        const { response, data } = await apiCall('/api/beneficiaries', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ function InfoSection() {
           formData.append('userId', userId);
           formData.append('type', 'secondary');
 
-          const avatarResponse = await fetch('/api/beneficiaries/avatar', {
+          const { response: avatarResponse, data: avatarData } = await apiCall('/api/beneficiaries/avatar', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`
@@ -201,13 +201,12 @@ function InfoSection() {
           });
 
           if (avatarResponse.ok) {
-            const avatarData = await avatarResponse.json();
             avatarUrl = avatarData.data.avatarUrl;
           }
         }
 
         // Save beneficiary info
-        const response = await fetch('/api/beneficiaries', {
+        const { response, data } = await apiCall('/api/beneficiaries', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../../utils/api';
 import videoIcon from '../../images/Setting Page/Untitled_icon/fluent_video-28-regular.svg';
 
 function VideoUploadSection() {
@@ -134,15 +135,13 @@ function VideoUploadSection() {
         formData.append('duration', videoElement.duration.toString());
       };
 
-      const response = await fetch('/api/upload/video', {
+      const { response, data } = await apiCall('/api/upload/video', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
         },
         body: formData
       });
-
-      const data = await response.json();
 
       if (response.ok && data.success) {
         toast.success('Upload video thành công');
