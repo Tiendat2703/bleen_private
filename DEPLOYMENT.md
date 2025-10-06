@@ -32,7 +32,7 @@ SUPABASE_SERVICE_KEY=your_supabase_service_key
 JWT_SECRET=your_jwt_secret_key
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD_HASH=your_bcrypt_hashed_password
-FRONTEND_URL=https://your-frontend-app.onrender.com
+# FRONTEND_URL không cần thiết vì đã set origin: true
 ```
 
 ### Bước 3: Tạo Admin Password Hash
