@@ -32,14 +32,13 @@ function MessageSection() {
     if (!userId || !token) return;
 
     try {
-      const response = await fetch(`/api/posts/${userId}`, {
+      const { response, data } = await apiCall(`/api/posts/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.ok) {
-        const data = await response.json();
         if (data.success && data.data) {
           setMessage(data.data.content || '');
         }
@@ -53,14 +52,13 @@ function MessageSection() {
     if (!userId || !token) return;
 
     try {
-      const response = await fetch(`/api/voice/${userId}`, {
+      const { response, data } = await apiCall(`/api/voice/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.ok) {
-        const data = await response.json();
         if (data.success && data.data) {
           setAudioUrl(data.data.file_url);
           setRecordingTime(data.data.duration || 0);
@@ -148,7 +146,7 @@ function MessageSection() {
       
       try {
         // Xóa post (message)
-        const postResponse = await fetch(`/api/posts/${userId}`, {
+        const { response: postResponse } = await apiCall(`/api/posts/${userId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -156,7 +154,7 @@ function MessageSection() {
         });
         
         // Xóa voice
-        const voiceResponse = await fetch(`/api/voice/${userId}`, {
+        const { response: voiceResponse } = await apiCall(`/api/voice/${userId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -198,7 +196,7 @@ function MessageSection() {
       // 1. Save message text if exists
       if (message && message.trim().length > 0) {
         totalTasks++;
-        const response = await fetch(`/api/posts/${userId}`, {
+        const { response, data } = await apiCall(`/api/posts/${userId}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -209,8 +207,6 @@ function MessageSection() {
             type: 'text'
           })
         });
-
-        const data = await response.json();
         if (response.ok && data.success) {
           successCount++;
         } else {

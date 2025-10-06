@@ -29,14 +29,13 @@ function InfoSection() {
     if (!userId || !token) return;
 
     try {
-      const response = await fetch(`/api/beneficiaries/${userId}`, {
+      const { response, data } = await apiCall(`/api/beneficiaries/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.ok) {
-        const data = await response.json();
         if (data.success && data.data) {
           let dataExists = false;
           
