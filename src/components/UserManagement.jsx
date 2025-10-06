@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { apiCall } from '../utils/api';
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -17,8 +18,7 @@ export default function UserManagement() {
 
   const checkServerHealth = async () => {
     try {
-      const response = await fetch('/api/health');
-      const data = await response.json();
+      const { response, data } = await apiCall('/api/health');
       console.log('Server health check:', data);
     } catch (error) {
       console.error('Server health check failed:', error);
@@ -32,14 +32,13 @@ export default function UserManagement() {
       const token = localStorage.getItem('adminToken');
       console.log('Loading users with token:', token ? 'exists' : 'missing');
       
-      const response = await fetch('/api/users/all', {
+      const { response, data } = await apiCall('/api/users/all', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       console.log('Users API response status:', response.status);
-      const data = await response.json();
       console.log('Users API response data:', data);
 
       if (response.ok && data.success) {

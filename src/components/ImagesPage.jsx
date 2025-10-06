@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../utils/api';
 import { Menu, X, Upload } from 'lucide-react';
 import logoImage from '../images/Video Page/source_2.png';
 import MenuSidebar from './MenuSidebar';
@@ -40,14 +41,13 @@ const ImagesPage = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/images/${userId}?sortBy=position`, {
+      const { response, data } = await apiCall(`/api/images/${userId}?sortBy=position`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.ok) {
-        const data = await response.json();
         if (data.success && data.data) {
           // Sort by position (1-9) to display in correct frame order
           const sortedImages = data.data
