@@ -13,9 +13,28 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS configuration
+// CORS configuration for production
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://127.0.0.1:5173', 
+  'http://localhost:5174', 
+  'http://localhost:5175', 
+  'http://localhost:5176',
+  // Add your Render frontend URL here
+  process.env.FRONTEND_URL || 'https://your-app-name.onrender.com'
+];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -54,12 +73,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 // =============================================================================
 // MIDDLEWARE
 // =============================================================================
-//app.use(cors());
-app.use(cors({
-    origin: ['http://127.0.0.1:5500', 'http://localhost:5500', 'http://127.0.0.1:5501'],
-    credentials: true,
-  }));
-app.use(express.json());
+// Remove duplicate CORS configuration
+// app.use(express.json()); // Already defined above
 
 // Rate Limiters
 const authLimiter = rateLimit({

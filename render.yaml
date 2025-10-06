@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: bleen-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server2.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: FRONTEND_URL
+        value: https://your-frontend-app.onrender.com
+
+  - type: web
+    name: bleen-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://bleen-backend.onrender.com
