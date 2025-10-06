@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { apiCall } from '../utils/api';
 import logoImage from '../images/Video Page/source_2.png';
 
 function EmailLoginPage() {
@@ -21,15 +22,10 @@ function EmailLoginPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/verify-email', {
+      const { response, data } = await apiCall('/api/auth/verify-email', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({ email: email.trim() })
       });
-
-      const data = await response.json();
 
       if (response.ok && data.success) {
         toast.success(`Xin chào ${data.data.fullName}!`);
