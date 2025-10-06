@@ -228,7 +228,7 @@ function MessageSection() {
         formData.append('userId', userId);
         formData.append('duration', recordingTime.toString());
 
-        const { response: voiceResponse } = await apiCall('/api/upload/voice', {
+        const { response: voiceResponse, data: voiceData } = await apiCall('/api/upload/voice', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -236,7 +236,6 @@ function MessageSection() {
           body: formData
         });
 
-        const voiceData = await voiceResponse.json();
         if (voiceResponse.ok && voiceData.success) {
           successCount++;
           setAudioUrl(voiceData.data.url);
