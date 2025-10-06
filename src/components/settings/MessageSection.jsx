@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../../utils/api';
 import micIcon from '../../images/Setting Page/Untitled_icon/Group.svg';
 import undoIcon from '../../images/Setting Page/Untitled_icon/subway_redo-icon.svg';
 
@@ -231,7 +232,7 @@ function MessageSection() {
         formData.append('userId', userId);
         formData.append('duration', recordingTime.toString());
 
-        const voiceResponse = await fetch('/api/upload/voice', {
+        const { response: voiceResponse } = await apiCall('/api/upload/voice', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
