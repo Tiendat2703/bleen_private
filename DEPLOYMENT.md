@@ -45,24 +45,28 @@ npm install bcrypt
 node -e "const bcrypt = require('bcrypt'); console.log(bcrypt.hashSync('your_password', 10));"
 ```
 
-## 🌐 Frontend Deployment (Render)
+## 🌐 Frontend Deployment (Vercel) - ĐÃ DEPLOY
 
-### Bước 1: Tạo Static Site trên Render
+### ✅ Frontend đã deploy thành công
+- **URL**: [https://21bleen-eight.vercel.app/](https://21bleen-eight.vercel.app/)
+- **Platform**: Vercel
+- **Status**: ✅ Live
 
-1. Click **"New +"** → **"Static Site"**
-2. Connect GitHub repository: `Tiendat2703/21BLEEN_NEW`
-3. Cấu hình:
-   - **Name**: `bleen-frontend`
-   - **Branch**: `main`
-   - **Root Directory**: `/` (để trống)
-   - **Build Command**: `npm install && npm run build`
-   - **Publish Directory**: `dist`
+### 🔧 Cấu hình Environment Variables trên Vercel
 
-### Bước 2: Environment Variables
+1. Vào [Vercel Dashboard](https://vercel.com/dashboard)
+2. Chọn project `21bleen-eight`
+3. Vào **Settings** → **Environment Variables**
+4. Thêm:
+   ```bash
+   VITE_API_URL=https://your-backend.onrender.com
+   ```
 
-```bash
-VITE_API_URL=https://bleen-backend.onrender.com
-```
+### 🔄 Redeploy sau khi thêm Environment Variables
+
+1. Vào **Deployments** tab
+2. Click **"Redeploy"** trên deployment mới nhất
+3. Hoặc push code mới để trigger auto-deploy
 
 ## 🔗 Cấu hình URLs
 

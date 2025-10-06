@@ -2,14 +2,15 @@
   "name": "bleen-project",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "node server2.js",
-    "server": "node server2.js"
+    "server": "node server2.js",
+    "dev:backend": "nodemon server2.js",
+    "dev:frontend": "vite"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
