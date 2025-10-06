@@ -21,26 +21,23 @@ function ImageUploadSection() {
 
   const loadExistingImages = async () => {
     try {
-      const response = await fetch(`/api/images/${userId}`, {
+      const { response, data } = await apiCall(`/api/images/${userId}?sortBy=position`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          // Map backend images to display format
-          const mappedImages = data.data.map(img => ({
-            id: img.id,
-            data: img.file_url,
-            name: img.file_name,
-            size: img.file_size,
-            position: img.position,
-            date: img.created_at
-          }));
-          setImages(mappedImages);
-        }
+      if (response.ok && data.success && data.data) {
+        // Map backend images to display format
+        const mappedImages = data.data.map(img => ({
+          id: img.id,
+          data: img.file_url,
+          name: img.file_name,
+          size: img.file_size,
+          position: img.position,
+          date: img.created_at
+        }));
+        setImages(mappedImages);
       }
     } catch (err) {
       console.error('Error loading images:', err);
@@ -51,9 +48,9 @@ function ImageUploadSection() {
     const files = Array.from(e.target.files);
     setError('');
 
-    // Check total count - max 9 images (positions 1-9)
-    if (images.length + files.length > 9) {
-      setError('Đã đạt giới hạn 9 ảnh (position 1-9)');
+    // Check total count - max 7 images (positions 1-7)
+    if (images.length + files.length > 7) {
+      setError('Đã đạt giới hạn 7 ảnh (position 1-7)');
       return;
     }
 
@@ -104,7 +101,7 @@ function ImageUploadSection() {
     // If image has ID, delete from backend
     if (imageToDelete.id) {
       try {
-        const response = await fetch(`/api/images/${imageToDelete.id}`, {
+        const { response } = await apiCall(`/api/images/${imageToDelete.id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -142,16 +139,21 @@ function ImageUploadSection() {
         .filter(img => img.position !== null && !img.isNew)
         .map(img => img.position);
       
-      // Find available positions (1-9)
+      console.log('Existing positions:', existingPositions);
+      console.log('All images:', images);
+      
+      // Find available positions (1-7)
       const availablePositions = [];
-      for (let i = 1; i <= 9; i++) {
+      for (let i = 1; i <= 7; i++) {
         if (!existingPositions.includes(i)) {
           availablePositions.push(i);
         }
       }
+      
+      console.log('Available positions:', availablePositions);
 
       if (imageFiles.length > availablePositions.length) {
-        setError(`Chỉ còn ${availablePositions.length} vị trí trống (từ position 1-9)`);
+        setError(`Chỉ còn ${availablePositions.length} vị trí trống (từ position 1-7)`);
         setIsUploading(false);
         return;
       }
@@ -214,7 +216,7 @@ function ImageUploadSection() {
         <div className="border-3 border-dashed border-primary-teal rounded-2xl p-8 flex flex-col items-center justify-center hover:bg-white transition-colors">
           <img src={uploadIcon} alt="Upload" className="w-16 h-16 mb-4" />
           <p className="text-primary-teal font-body text-sm text-center">
-            Chọn ảnh có kích thước nhỏ hơn 5MB, tối đa 9 ảnh (position 1-9)
+            Chọn ảnh có kích thước nhỏ hơn 5MB, tối đa 7 ảnh (position 1-7)
           </p>
         </div>
       </label>
@@ -255,7 +257,7 @@ function ImageUploadSection() {
       )}
 
       <p className="text-primary-teal font-body text-sm mb-4">
-        Đã có: {images.filter(img => !img.isNew).length}/9 ảnh | Chọn mới: {imageFiles.length} ảnh
+        Đã có: {images.filter(img => !img.isNew).length}/7 ảnh | Chọn mới: {imageFiles.length} ảnh
       </p>
 
       {error && (
