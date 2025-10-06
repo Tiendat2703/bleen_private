@@ -14,7 +14,7 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/admin/login/simple', {
+      const { response, data } = await apiCall('/api/admin/login/simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -24,8 +24,6 @@ export default function AdminLogin() {
           password: password 
         }),
       });
-
-      const data = await response.json();
 
       if (response.ok && data.success) {
         const token = data.data?.token;

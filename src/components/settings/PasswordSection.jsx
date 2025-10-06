@@ -54,7 +54,7 @@ function PasswordSection() {
     setSuccess('');
 
     try {
-      const response = await fetch('/api/auth/change-passcode', {
+      const { response, data } = await apiCall('/api/auth/change-passcode', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,8 +65,6 @@ function PasswordSection() {
           newPasscode: newPassword
         })
       });
-
-      const data = await response.json();
 
       if (response.ok && data.success) {
         toast.success('Đổi mật khẩu thành công');

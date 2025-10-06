@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { apiCall } from '../utils/api';
 import CreateUser from './CreateUser';
 import UserManagement from './UserManagement';
 
@@ -63,7 +64,7 @@ export default function AdminPage() {
     try {
       console.log('Making auth check request...');
       // Try to make a request that requires admin authentication
-      const response = await fetch('/api/users/all', {
+      const { response, data } = await apiCall('/api/users/all', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

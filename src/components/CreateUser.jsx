@@ -76,7 +76,7 @@ export default function CreateUser({ onUserCreated }) {
       console.log('Creating user with token:', token ? 'exists' : 'missing');
       console.log('Request data:', { email: formData.email, full_name: formData.full_name, passcode: formData.passcode });
       
-      const response = await fetch('/api/auth/register', {
+      const { response, data } = await apiCall('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +90,6 @@ export default function CreateUser({ onUserCreated }) {
       });
 
       console.log('Response status:', response.status);
-      const data = await response.json();
       console.log('Response data:', data);
       console.log('User data:', data.data);
 
