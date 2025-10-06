@@ -87,6 +87,23 @@ function VideoPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#F4FFF8' }}>
+      <style jsx global>{`
+        video::-webkit-media-controls-fullscreen-button {
+          display: none !important;
+        }
+        video::-webkit-media-controls {
+          overflow: visible !important;
+        }
+        video {
+          -webkit-playsinline: true !important;
+          -moz-playsinline: true !important;
+          -ms-playsinline: true !important;
+          playsinline: true !important;
+        }
+        video::-webkit-media-controls-panel {
+          background: rgba(0,0,0,0.8) !important;
+        }
+      `}</style>
       <MenuSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       {/* Header with Logo and Menu Button */}
@@ -140,6 +157,14 @@ function VideoPage() {
                     onPlay={handleVideoPlay}
                     onPause={handleVideoPause}
                     className="w-full h-full object-cover"
+                    playsInline
+                    webkit-playsinline="true"
+                    x5-playsinline="true"
+                    x5-video-player-type="h5"
+                    x5-video-player-fullscreen="false"
+                    x5-video-orientation="portraint"
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    disablePictureInPicture
                   />
                   
                   {/* Custom Play Button Overlay */}
