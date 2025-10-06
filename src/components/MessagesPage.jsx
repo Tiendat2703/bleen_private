@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiCall } from '../utils/api';
 import MenuSidebar from './MenuSidebar';
 import NavigationArrows from './NavigationArrows';
 import hoaTiet from '../images/Messages Page/Untitled_img/Hoạ tiết.png';
@@ -39,28 +40,26 @@ function MessagesPage() {
       setIsLoading(true);
 
       // Load message from posts API
-      const postResponse = await fetch(`/api/posts/${userId}`, {
+      const { response: postResponse, data: postData } = await apiCall(`/api/posts/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (postResponse.ok) {
-        const postData = await postResponse.json();
         if (postData.success && postData.data) {
           setMessage(postData.data.content || '');
         }
       }
 
       // Load beneficiaries (person 1 and person 2)
-      const benefResponse = await fetch(`/api/beneficiaries/${userId}`, {
+      const { response: benefResponse, data: benefData } = await apiCall(`/api/beneficiaries/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (benefResponse.ok) {
-        const benefData = await benefResponse.json();
         if (benefData.success && benefData.data) {
           if (benefData.data.primary) {
             setPerson1({
@@ -78,14 +77,13 @@ function MessagesPage() {
       }
 
       // Load voice from voice API
-      const voiceResponse = await fetch(`/api/voice/${userId}`, {
+      const { response: voiceResponse, data: voiceData } = await apiCall(`/api/voice/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (voiceResponse.ok) {
-        const voiceData = await voiceResponse.json();
         if (voiceData.success && voiceData.data) {
           setAudioData(voiceData.data.file_url);
         }

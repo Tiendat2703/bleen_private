@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../utils/api';
 import MenuSidebar from './MenuSidebar';
 import NavigationArrows from './NavigationArrows';
 import logoImage from '../images/Video Page/source_2.png';
@@ -28,14 +29,13 @@ function VideoPage() {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/video/${userId}`, {
+      const { response, data } = await apiCall(`/api/video/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.ok) {
-        const data = await response.json();
         if (data.success && data.data) {
           setVideo({
             id: data.data.id,

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../utils/api';
 import MenuSidebar from './MenuSidebar';
 import NavigationArrows from './NavigationArrows';
 import hoaTiet from '../images/Home Page (After Unlock)/Untitled_img/Hoạ tiết.png';
@@ -46,14 +47,13 @@ export default function HomeAfterUnlock() {
       setIsLoading(true);
       setVideoError('');
       
-      const response = await fetch(`/api/video/${userId}`, {
+      const { response, data } = await apiCall(`/api/video/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.ok) {
-        const data = await response.json();
         if (data.success && data.data) {
           setVideoData(data.data);
         } else {
@@ -81,14 +81,13 @@ export default function HomeAfterUnlock() {
     if (!userId || !token) return;
 
     try {
-      const response = await fetch(`/api/images/${userId}?sortBy=position`, {
+      const { response, data } = await apiCall(`/api/images/${userId}?sortBy=position`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.ok) {
-        const data = await response.json();
         if (data.success && data.data) {
           // Tìm ảnh theo position 1, 5, 3
           const images = data.data;
