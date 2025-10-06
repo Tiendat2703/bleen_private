@@ -108,11 +108,11 @@ function UnlockPage() {
       </div>
 
       {/* Password Indicators */}
-      <div className="flex gap-4 md:gap-5 mb-8">
+      <div className="flex gap-2 md:gap-3 mb-8 justify-center">
         {[0, 1, 2, 3].map((index) => (
           <div
             key={index}
-            className={`w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] border-primary-teal transition-all ${
+            className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-[1px] border-primary-teal transition-all ${
               password.length > index ? 'bg-primary-teal' : 'bg-transparent'
             }`}
           />
