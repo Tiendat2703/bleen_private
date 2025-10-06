@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { apiCall } from '../utils/api';
 import 'react-toastify/dist/ReactToastify.css';
 
 function UnlockPage() {
@@ -38,16 +39,13 @@ function UnlockPage() {
       }
       
       // Call verification API
-      const response = await fetch('/api/auth/verify-passcode', {
+      const { response, data } = await apiCall('/api/auth/verify-passcode', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: userId.trim(),
           passcode: password
         })
       });
-
-      const data = await response.json();
       
       if (!response.ok) {
         throw new Error(data.message || 'Lỗi xác thực');
