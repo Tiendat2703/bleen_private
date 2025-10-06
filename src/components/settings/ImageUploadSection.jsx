@@ -21,11 +21,14 @@ function ImageUploadSection() {
 
   const loadExistingImages = async () => {
     try {
+      console.log('Loading existing images for userId:', userId);
       const { response, data } = await apiCall(`/api/images/${userId}?sortBy=position`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      console.log('Existing images API response:', { response, data });
       
       if (response.ok && data.success && data.data) {
         // Map backend images to display format
@@ -41,6 +44,8 @@ function ImageUploadSection() {
       }
     } catch (err) {
       console.error('Error loading images:', err);
+      console.log('Setting fallback empty images due to API error');
+      setImages([]);
     }
   };
 

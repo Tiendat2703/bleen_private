@@ -81,11 +81,14 @@ export default function HomeAfterUnlock() {
     if (!userId || !token) return;
 
     try {
+      console.log('Loading thumbnail images for userId:', userId);
       const { response, data } = await apiCall(`/api/images/${userId}?sortBy=position`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      console.log('Thumbnail images API response:', { response, data });
 
       if (response.ok) {
         if (data.success && data.data) {
@@ -104,6 +107,12 @@ export default function HomeAfterUnlock() {
       }
     } catch (err) {
       console.error('Error loading thumbnail images:', err);
+      console.log('Setting fallback empty thumbnails due to API error');
+      setThumbnailImages({
+        position1: null,
+        position5: null,
+        position3: null
+      });
     }
   };
 

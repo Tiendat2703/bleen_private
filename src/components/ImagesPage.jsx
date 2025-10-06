@@ -41,11 +41,14 @@ const ImagesPage = () => {
 
     try {
       setIsLoading(true);
+      console.log('Loading images for userId:', userId);
       const { response, data } = await apiCall(`/api/images/${userId}?sortBy=position`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      console.log('Images API response:', { response, data });
 
       if (response.ok) {
         if (data.success && data.data) {
@@ -100,6 +103,7 @@ const ImagesPage = () => {
       }
     } catch (err) {
       console.error('Error loading images:', err);
+      console.log('Setting fallback empty images due to API error');
       toast.error('Lỗi khi tải ảnh: ' + err.message);
       setImages({
         frame1: '',
