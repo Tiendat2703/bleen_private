@@ -3,7 +3,7 @@ services:
     name: bleen-backend
     env: node
     plan: free
-    buildCommand: npm install --legacy-peer-deps
+    buildCommand: npm install --force
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -22,7 +22,7 @@ services:
   - type: web
     name: bleen-frontend
     env: static
-    buildCommand: npm install --legacy-peer-deps && npm run build
+    buildCommand: npm install --force && npm run build
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
