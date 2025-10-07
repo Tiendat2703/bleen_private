@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { apiCall } from '../utils/api';
 import MenuSidebar from './MenuSidebar';
+import NavigationArrows from './NavigationArrows';
 import logoImage from '../images/Video Page/source_2.png';
 
 function VideoPage() {
@@ -18,6 +19,23 @@ function VideoPage() {
   useEffect(() => {
     // Load video from backend API
     loadVideoFromBackend();
+    
+    // Listen for fullscreen changes
+    const handleFullscreenChange = () => {
+      console.log('Fullscreen changed:', !!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
   }, [userId, token]);
 
   const loadVideoFromBackend = async () => {
@@ -135,36 +153,56 @@ function VideoPage() {
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#F4FFF8' }}>
       <style jsx global>{`
+        /* Hide default fullscreen button but allow fullscreen functionality */
         video::-webkit-media-controls-fullscreen-button {
+          display: none !important;
+        }
+        /* Hide timeline/seek bar */
+        video::-webkit-media-controls-timeline {
+          display: none !important;
+        }
+        video::-webkit-media-controls-current-time-display {
+          display: none !important;
+        }
+        video::-webkit-media-controls-time-remaining-display {
           display: none !important;
         }
         video::-webkit-media-controls {
           overflow: visible !important;
         }
-        video {
-          -webkit-playsinline: true !important;
-          -moz-playsinline: true !important;
-          -ms-playsinline: true !important;
-          playsinline: true !important;
-        }
         video::-webkit-media-controls-panel {
           background: rgba(0,0,0,0.8) !important;
         }
-        /* Style fullscreen video properly */
+        /* Fullscreen styles */
         video:fullscreen {
           object-fit: contain !important;
           background: black !important;
+          width: 100vw !important;
+          height: 100vh !important;
         }
         video:-webkit-full-screen {
           object-fit: contain !important;
           background: black !important;
+          width: 100vw !important;
+          height: 100vh !important;
         }
         video:-moz-full-screen {
           object-fit: contain !important;
           background: black !important;
+          width: 100vw !important;
+          height: 100vh !important;
         }
         video:-ms-fullscreen {
           object-fit: contain !important;
+          background: black !important;
+          width: 100vw !important;
+          height: 100vh !important;
+        }
+        /* Container for fullscreen */
+        .video-container:fullscreen {
+          background: black !important;
+        }
+        .video-container:-webkit-full-screen {
           background: black !important;
         }
       `}</style>
@@ -210,7 +248,7 @@ function VideoPage() {
                   </p>
                 </div>
               ) : video ? (
-                <div className="relative w-full h-full">
+                <div className="relative w-full h-full video-container">
                   <video
                     ref={videoRef}
                     src={video.data}
@@ -225,7 +263,7 @@ function VideoPage() {
                     x5-video-player-type="h5"
                     x5-video-player-fullscreen="false"
                     x5-video-orientation="portraint"
-                    controlsList="nodownload nofullscreen noremoteplayback"
+                    controlsList="nodownload noremoteplayback noseek"
                     disablePictureInPicture
                   />
                   
@@ -265,13 +303,10 @@ function VideoPage() {
               )}
       </div>
 
+      {/* Navigation Arrows */}
+      <NavigationArrows />
     </div>
   );
 }
 
 export default VideoPage;
-
-
-
-
-
