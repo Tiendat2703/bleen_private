@@ -85,6 +85,22 @@ function VideoPage() {
     setShowPlayButton(false);
   };
 
+  const handleVideoDoubleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Zoom out behavior - exit fullscreen if in fullscreen
+    if (videoRef.current && !document.fullscreenElement) {
+      // If not in fullscreen, just prevent default zoom behavior
+      return;
+    }
+    
+    // If somehow in fullscreen, exit it
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#F4FFF8' }}>
       <style jsx global>{`
@@ -133,14 +149,11 @@ function VideoPage() {
         </button>
       </div>
 
-      {/* Main content container */}
-      <div className="relative z-10 px-4 pb-8">
-        <div className="max-w-sm mx-auto">
-
-          {/* Main rounded container */}
-          <div className="relative bg-light-mint rounded-t-[196px] w-full h-[732px] mt-8">
-            {/* Video player container */}
-            <div className="absolute top-[62px] left-1/2 transform -translate-x-1/2 w-[320px] h-[608px] rounded-t-[160px] overflow-hidden">
+      {/* Main Container - Full width like MessagesPage */}
+      <div className="absolute bg-[#d9ffe8] h-[732px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[393px]" data-node-id="0:1223" />
+      
+      {/* Video player container */}
+      <div className="absolute top-[182px] left-1/2 transform -translate-x-1/2 w-[320px] h-[608px] rounded-t-[160px] overflow-hidden">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center text-center p-8 h-full bg-gray-100">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-teal mb-4"></div>
@@ -156,6 +169,7 @@ function VideoPage() {
                     controls
                     onPlay={handleVideoPlay}
                     onPause={handleVideoPause}
+                    onDoubleClick={handleVideoDoubleClick}
                     className="w-full h-full object-cover"
                     playsInline
                     webkit-playsinline="true"
@@ -201,9 +215,6 @@ function VideoPage() {
                   </button>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Navigation Arrows */}
