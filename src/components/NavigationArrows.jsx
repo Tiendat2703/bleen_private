@@ -9,7 +9,14 @@ function NavigationArrows() {
   const previousPage = getPreviousPage(currentPath);
   const nextPage = getNextPage(currentPath);
 
+  // Debug logging
+  console.log('NavigationArrows Debug:');
+  console.log('Current path:', currentPath);
+  console.log('Previous page:', previousPage);
+  console.log('Next page:', nextPage);
+
   const handleLeftClick = (e) => {
+    console.log('Left click detected');
     // Check if clicking on interactive elements
     const target = e.target;
     const isInteractiveElement = target.closest('button') || 
@@ -22,12 +29,17 @@ function NavigationArrows() {
                                 target.closest('[role="button"]') ||
                                 target.closest('.menu-sidebar');
 
+    console.log('Is interactive element:', isInteractiveElement);
+    console.log('Previous page available:', previousPage);
+
     if (!isInteractiveElement && previousPage) {
+      console.log('Navigating to previous page:', previousPage);
       navigate(previousPage);
     }
   };
 
   const handleRightClick = (e) => {
+    console.log('Right click detected');
     // Check if clicking on interactive elements
     const target = e.target;
     const isInteractiveElement = target.closest('button') || 
@@ -40,7 +52,11 @@ function NavigationArrows() {
                                 target.closest('[role="button"]') ||
                                 target.closest('.menu-sidebar');
 
+    console.log('Is interactive element:', isInteractiveElement);
+    console.log('Next page available:', nextPage);
+
     if (!isInteractiveElement && nextPage) {
+      console.log('Navigating to next page:', nextPage);
       navigate(nextPage);
     }
   };
