@@ -14,14 +14,21 @@ function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: '#F4FFF8' }}>
-      {/* Logo chính - Centered - 2x size and moved up 100px */}
-      <div className="mb-20" style={{ transform: 'translateY(-100px)' }}>
+      {/* Logo chính - Fixed position */}
+      <div 
+        style={{ 
+          position: 'absolute',
+          top: '147px',
+          left: '14px',
+          width: '364px',
+          height: '364px'
+        }}
+      >
         <img 
           src={logoImage} 
           alt="21 Bleen Studio" 
-          className="w-auto object-contain"
+          className="w-full h-full object-contain"
           style={{ 
-            height: '400px', // 200px * 2 = 400px
             filter: 'none',
             imageRendering: 'high-quality'
           }}
