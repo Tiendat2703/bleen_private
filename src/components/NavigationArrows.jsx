@@ -27,7 +27,10 @@ function NavigationArrows() {
                                 target.closest('audio') ||
                                 target.closest('a') ||
                                 target.closest('[role="button"]') ||
-                                target.closest('.menu-sidebar');
+                                target.closest('.menu-sidebar') ||
+                                target.closest('[title*="fullscreen"]') ||
+                                target.closest('[title*="Toàn màn hình"]') ||
+                                target.closest('[title*="Thoát toàn màn hình"]');
 
     console.log('Is interactive element:', isInteractiveElement);
     console.log('Previous page available:', previousPage);
@@ -50,7 +53,10 @@ function NavigationArrows() {
                                 target.closest('audio') ||
                                 target.closest('a') ||
                                 target.closest('[role="button"]') ||
-                                target.closest('.menu-sidebar');
+                                target.closest('.menu-sidebar') ||
+                                target.closest('[title*="fullscreen"]') ||
+                                target.closest('[title*="Toàn màn hình"]') ||
+                                target.closest('[title*="Thoát toàn màn hình"]');
 
     console.log('Is interactive element:', isInteractiveElement);
     console.log('Next page available:', nextPage);
@@ -67,7 +73,7 @@ function NavigationArrows() {
       {previousPage && (
         <div
           onClick={handleLeftClick}
-          className="fixed left-0 top-0 bottom-0 w-1/6 z-10 cursor-pointer hover:bg-black hover:bg-opacity-5 transition-all"
+          className="fixed left-0 top-0 bottom-0 w-1/12 z-5 cursor-pointer hover:bg-black hover:bg-opacity-5 transition-all"
           aria-label="Previous page"
         />
       )}
@@ -76,7 +82,7 @@ function NavigationArrows() {
       {nextPage && (
         <div
           onClick={handleRightClick}
-          className="fixed right-0 top-0 bottom-0 w-1/6 z-10 cursor-pointer hover:bg-black hover:bg-opacity-5 transition-all"
+          className="fixed right-0 top-0 bottom-0 w-1/12 z-5 cursor-pointer hover:bg-black hover:bg-opacity-5 transition-all"
           aria-label="Next page"
         />
       )}
