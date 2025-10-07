@@ -190,6 +190,14 @@ function VideoPage() {
           object-fit: contain !important;
           background: black !important;
         }
+        /* Show fullscreen button in fullscreen mode */
+        video:fullscreen + * button[title*="fullscreen"],
+        video:-webkit-full-screen + * button[title*="fullscreen"],
+        video:-moz-full-screen + * button[title*="fullscreen"],
+        video:-ms-fullscreen + * button[title*="fullscreen"] {
+          display: block !important;
+          z-index: 9999 !important;
+        }
       `}</style>
       <MenuSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
@@ -252,9 +260,9 @@ function VideoPage() {
                     disablePictureInPicture
                   />
                   
-                  {/* Custom Play Button Overlay - Reduced opacity to avoid darkening */}
+                  {/* Custom Play Button Overlay */}
                   {showPlayButton && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <button
                         onClick={handlePlayClick}
                         className="w-16 h-16 bg-primary-teal rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
@@ -273,12 +281,12 @@ function VideoPage() {
                     </div>
                   )}
 
-                  {/* Fullscreen Toggle Button - Always visible */}
+                  {/* Fullscreen Toggle Button */}
                   <button
                     onClick={toggleFullscreen}
-                    className={`absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all z-50 ${isFullscreen ? 'fixed top-4 right-4' : ''}`}
+                    className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all z-50"
                     title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
-                    style={isFullscreen ? { position: 'fixed', top: '16px', right: '16px', zIndex: 9999 } : {}}
+                    style={{ zIndex: 9999 }}
                   >
                     {isFullscreen ? (
                       // Exit fullscreen icon
