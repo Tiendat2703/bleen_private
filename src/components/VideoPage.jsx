@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { apiCall } from '../utils/api';
 import MenuSidebar from './MenuSidebar';
-import NavigationArrows from './NavigationArrows';
 import logoImage from '../images/Video Page/source_2.png';
 
 function VideoPage() {
@@ -266,8 +265,6 @@ function VideoPage() {
               )}
       </div>
 
-      {/* Navigation Arrows */}
-      <NavigationArrows />
     </div>
   );
 }
