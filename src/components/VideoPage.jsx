@@ -89,16 +89,9 @@ function VideoPage() {
     e.preventDefault();
     e.stopPropagation();
     
-    // Zoom out behavior - exit fullscreen if in fullscreen
-    if (videoRef.current && !document.fullscreenElement) {
-      // If not in fullscreen, just prevent default zoom behavior
-      return;
-    }
-    
-    // If somehow in fullscreen, exit it
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
+    // Completely prevent any fullscreen behavior
+    // Just do nothing on double click to avoid black screen
+    return false;
   };
 
   return (
@@ -118,6 +111,19 @@ function VideoPage() {
         }
         video::-webkit-media-controls-panel {
           background: rgba(0,0,0,0.8) !important;
+        }
+        /* Prevent fullscreen completely */
+        video:fullscreen {
+          display: none !important;
+        }
+        video:-webkit-full-screen {
+          display: none !important;
+        }
+        video:-moz-full-screen {
+          display: none !important;
+        }
+        video:-ms-fullscreen {
+          display: none !important;
         }
       `}</style>
       <MenuSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
