@@ -10,6 +10,17 @@ function MessageSection() {
   const { userId } = useParams();
   const { token } = useAuth();
   const [message, setMessage] = useState('');
+  
+  // Function to count words
+  const countWords = (text) => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+  
+  // Function to validate word limit
+  const validateWordLimit = (text) => {
+    const wordCount = countWords(text);
+    return wordCount <= 500;
+  };
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -187,6 +198,12 @@ function MessageSection() {
       return;
     }
 
+    // Validate word limit for message
+    if (message && message.trim().length > 0 && !validateWordLimit(message)) {
+      setError('Thông điệp không được vượt quá 500 từ');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -274,20 +291,33 @@ function MessageSection() {
 
   return (
     <div className="bg-light-mint rounded-3xl p-6 border-2 border-primary-teal">
-      <h2 className="text-primary-teal font-heading text-xl md:text-2xl mb-4">
+      <h2 className="text-primary-teal font-heading text-xl md:text-2xl mb-2">
         Thông điệp được gửi gắm
       </h2>
+      <p className="text-primary-teal text-sm mb-4 opacity-75">
+        Viết thông điệp từ trái tim của bạn (tối đa 500 từ)
+      </p>
 
       {/* Message Text Area */}
       <textarea
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Viết thông điệp bạn muốn gửi đi nhé..."
-        maxLength={1000}
-        className="w-full bg-white rounded-lg px-4 py-3 text-primary-teal font-body focus:outline-none focus:ring-2 focus:ring-primary-teal mb-2 min-h-[120px] resize-none"
+        onChange={(e) => {
+          const newText = e.target.value;
+          if (validateWordLimit(newText)) {
+            setMessage(newText);
+          } else {
+            toast.warning('Thông điệp không được vượt quá 500 từ');
+          }
+        }}
+        placeholder="Viết thông điệp bạn muốn gửi đi nhé... (tối đa 500 từ)"
+        className={`w-full bg-white rounded-lg px-4 py-3 text-primary-teal font-body focus:outline-none focus:ring-2 focus:ring-primary-teal mb-2 min-h-[120px] resize-none ${
+          !validateWordLimit(message) ? 'ring-2 ring-red-500' : ''
+        }`}
       />
-      <p className="text-primary-teal text-sm mb-4 text-right">
-        {message.length}/1000 ký tự
+      <p className={`text-sm mb-4 text-right ${
+        countWords(message) > 500 ? 'text-red-500' : 'text-primary-teal'
+      }`}>
+        {countWords(message)}/500 từ
       </p>
 
       {/* Audio Recording Controls */}
