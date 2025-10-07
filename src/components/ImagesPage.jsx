@@ -133,14 +133,14 @@ const ImagesPage = () => {
       <MenuSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       {/* Header with Logo and Menu Button */}
-      <div className="relative z-20 flex justify-between items-center px-6 pt-1 pb-4">
+      <div className="relative z-20 flex justify-between items-center px-4 sm:px-6 pt-2 pb-4">
         <div className="flex items-center">
           <img 
             src={logoImage} 
             alt="21 Bleen Studio" 
             className="w-auto object-contain"
             style={{ 
-              height: '150px',
+              height: '120px',
               filter: 'none',
               imageRendering: 'high-quality'
             }}
@@ -149,7 +149,7 @@ const ImagesPage = () => {
         
         <button 
           onClick={handleMenuToggle}
-          className="text-primary-teal hover:opacity-70 transition-opacity"
+          className="text-primary-teal hover:opacity-70 transition-opacity p-2"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -157,7 +157,7 @@ const ImagesPage = () => {
         </button>
       </div>
 
-      <div className="absolute bg-[#d9ffe8] h-[810px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[450px]" data-node-id="0:1223" />
+      <div className="absolute bg-[#d9ffe8] h-[810px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[px]" data-node-id="0:1223" />
       
       <div className="absolute size-[76px] top-[155px] translate-x-[-50%] left-1/2" data-name="Hoạ tiết" data-node-id="0:1232">
         <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover opacity-20 pointer-events-none size-full" src={hoaTiet} />
