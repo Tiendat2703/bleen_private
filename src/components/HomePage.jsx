@@ -13,33 +13,30 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: '#F4FFF8' }}>
-      {/* Logo chính - Centered */}
-      <div className="mb-20" style={{ transform: 'translateY(-100px)' }}>
+    <div className="min-h-screen bg-off-white flex flex-col items-center justify-between py-12 px-4">
+      {/* Logo Section */}
+      <div className="flex-1 flex items-center justify-center">
         <img 
-          src={logoImage} 
-          alt="21 Bleen Studio" 
-          className="w-auto object-contain"
-          style={{ 
-            height: '100px',
-            filter: 'none',
-            imageRendering: 'high-quality'
-          }}
+          src={logoChinh} 
+          alt="21 Bleen Studio Logo" 
+          className="w-64 md:w-80 lg:w-96 object-contain"
         />
       </div>
 
-      {/* Fingerprint Icon - Centered */}
-      <button 
-        onClick={handleFingerprintClick}
-        className="hover:scale-105 transition-transform cursor-pointer"
-        style={{ transform: 'translateY(30px)' }}
-      >
-        <img 
-          src={vectorIcon} 
-          alt="Fingerprint" 
-          className="w-30 h-30"
-        />
-      </button>
+      {/* Fingerprint Icon */}
+      <div className="pb-12">
+        <button
+          onClick={handleFingerprintClick}
+          className="transition-transform hover:scale-110 active:scale-95 focus:outline-none"
+          aria-label="Unlock"
+        >
+          <img 
+            src={vectorIcon} 
+            alt="Fingerprint Icon" 
+            className="w-20 h-20 md:w-24 md:h-24 object-contain"
+          />
+        </button>
+      </div>
     </div>
   );
 }
