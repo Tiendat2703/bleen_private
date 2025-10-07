@@ -56,8 +56,8 @@ const NavigateWithUserId = () => {
   const { userId } = useParams();
   console.log('NavigateWithUserId - userId:', userId);
   console.log('Current URL:', window.location.href);
-  console.log('Redirecting to:', `/${userId}/unlock`);
-  return <Navigate to={`/${userId}/unlock`} replace />;
+  console.log('Redirecting to:', `/${userId}/home`);
+  return <Navigate to={`/${userId}/home`} replace />;
 };
 
 const AppRoutes = () => {
@@ -79,7 +79,7 @@ const AppRoutes = () => {
       {/* Protected routes */}
       <Route path="/:userId/home" element={
         <ProtectedRoute>
-          <HomeAfterUnlock />
+          <HomePage />
         </ProtectedRoute>
       } />
       
