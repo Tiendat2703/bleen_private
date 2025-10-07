@@ -31,6 +31,8 @@ function VideoPage() {
         document.mozFullScreenElement ||
         document.msFullscreenElement
       );
+      console.log('Fullscreen change detected:', isCurrentlyFullscreen);
+      console.log('Current fullscreen element:', document.fullscreenElement);
       setIsFullscreen(isCurrentlyFullscreen);
     };
 
@@ -125,6 +127,7 @@ function VideoPage() {
 
     try {
       if (!isFullscreen) {
+        console.log('Entering fullscreen...');
         // Enter fullscreen
         if (videoRef.current.requestFullscreen) {
           await videoRef.current.requestFullscreen();
@@ -135,8 +138,10 @@ function VideoPage() {
         } else if (videoRef.current.msRequestFullscreen) {
           await videoRef.current.msRequestFullscreen();
         }
-        setIsFullscreen(true);
+        // Don't set state here, let the event listener handle it
+        console.log('Fullscreen request sent');
       } else {
+        console.log('Exiting fullscreen...');
         // Exit fullscreen
         if (document.exitFullscreen) {
           await document.exitFullscreen();
@@ -147,7 +152,7 @@ function VideoPage() {
         } else if (document.msExitFullscreen) {
           await document.msExitFullscreen();
         }
-        setIsFullscreen(false);
+        console.log('Exit fullscreen request sent');
       }
     } catch (error) {
       console.error('Fullscreen error:', error);
@@ -299,6 +304,11 @@ function VideoPage() {
                   </button>
                 </div>
               )}
+      </div>
+
+      {/* Debug: Show fullscreen state */}
+      <div className="fixed top-4 left-4 z-50 bg-black bg-opacity-70 text-white p-2 rounded text-xs">
+        Fullscreen: {isFullscreen ? 'YES' : 'NO'}
       </div>
 
       {/* Fullscreen Exit Button - Only show when in fullscreen */}
