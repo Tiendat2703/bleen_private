@@ -14,21 +14,21 @@ function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: '#F4FFF8' }}>
-      {/* Logo chính - Centered */}
+      {/* Logo chính - Centered - 2x size */}
       <div className="mb-20">
         <img 
           src={logoImage} 
           alt="21 Bleen Studio" 
           className="w-auto object-contain"
           style={{ 
-            height: '200px',
+            height: '400px', // 200px * 2 = 400px
             filter: 'none',
             imageRendering: 'high-quality'
           }}
         />
       </div>
 
-      {/* Fingerprint Icon - Centered */}
+      {/* Fingerprint Icon - Centered - 0.75x size */}
       <button 
         onClick={handleFingerprintClick}
         className="hover:scale-105 transition-transform cursor-pointer"
@@ -36,7 +36,7 @@ function HomePage() {
         <img 
           src={vectorIcon} 
           alt="Fingerprint" 
-          className="w-12 h-12"
+          className="w-9 h-9" // 12px * 0.75 = 9px
         />
       </button>
     </div>
