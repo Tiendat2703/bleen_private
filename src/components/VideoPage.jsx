@@ -252,9 +252,9 @@ function VideoPage() {
                     disablePictureInPicture
                   />
                   
-                  {/* Custom Play Button Overlay */}
+                  {/* Custom Play Button Overlay - Reduced opacity to avoid darkening */}
                   {showPlayButton && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10">
                       <button
                         onClick={handlePlayClick}
                         className="w-16 h-16 bg-primary-teal rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
@@ -273,11 +273,12 @@ function VideoPage() {
                     </div>
                   )}
 
-                  {/* Fullscreen Toggle Button */}
+                  {/* Fullscreen Toggle Button - Always visible */}
                   <button
                     onClick={toggleFullscreen}
-                    className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all"
+                    className={`absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all z-50 ${isFullscreen ? 'fixed top-4 right-4' : ''}`}
                     title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+                    style={isFullscreen ? { position: 'fixed', top: '16px', right: '16px', zIndex: 9999 } : {}}
                   >
                     {isFullscreen ? (
                       // Exit fullscreen icon
