@@ -274,7 +274,7 @@ function VideoPage() {
                   {/* Fullscreen Toggle Button */}
                   <button
                     onClick={toggleFullscreen}
-                    className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all"
+                    className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all z-20"
                     title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
                   >
                     {isFullscreen ? (

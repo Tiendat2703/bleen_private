@@ -27,7 +27,9 @@ function NavigationArrows() {
                                 target.closest('audio') ||
                                 target.closest('a') ||
                                 target.closest('[role="button"]') ||
-                                target.closest('.menu-sidebar');
+                                target.closest('.menu-sidebar') ||
+                                target.closest('[title*="màn hình"]') ||
+                                target.closest('[title*="fullscreen"]');
 
     console.log('Is interactive element:', isInteractiveElement);
     console.log('Previous page available:', previousPage);
@@ -50,7 +52,9 @@ function NavigationArrows() {
                                 target.closest('audio') ||
                                 target.closest('a') ||
                                 target.closest('[role="button"]') ||
-                                target.closest('.menu-sidebar');
+                                target.closest('.menu-sidebar') ||
+                                target.closest('[title*="màn hình"]') ||
+                                target.closest('[title*="fullscreen"]');
 
     console.log('Is interactive element:', isInteractiveElement);
     console.log('Next page available:', nextPage);
