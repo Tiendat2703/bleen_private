@@ -8,6 +8,10 @@ function HomePage() {
   const navigate = useNavigate();
 
   const handleFingerprintClick = () => {
+    console.log('Fingerprint clicked!');
+    console.log('Current userId:', userId);
+    console.log('Navigating to:', `/${userId}/unlock`);
+    
     // Navigate to unlock page when fingerprint is clicked
     navigate(`/${userId}/unlock`);
   };
