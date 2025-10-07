@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import logoImage from '../images/Home Page (Initial Landing)/Logo chính.png';
+import logoChinh from '../images/Home Page (Initial Landing)/Logo chính.png';
 import vectorIcon from '../images/Home Page (Initial Landing)/Vector.svg';
 
 function HomePage() {
