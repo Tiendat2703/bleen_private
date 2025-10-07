@@ -55,9 +55,9 @@ function VideoUploadSection() {
 
     if (!file) return;
 
-    // Check file size (150MB max for backend)
-    if (file.size > 150 * 1024 * 1024) {
-      setError('Video quá lớn (> 150MB)');
+    // Check file size (100MB max for backend)
+    if (file.size > 100 * 1024 * 1024) {
+      setError('Video quá lớn (> 100MB)');
       return;
     }
 
@@ -198,7 +198,7 @@ function VideoUploadSection() {
           <div className="border-3 border-dashed border-primary-teal rounded-2xl p-8 flex flex-col items-center justify-center hover:bg-white transition-colors">
             <img src={videoIcon} alt="Upload Video" className="w-16 h-16 mb-4" />
             <p className="text-primary-teal font-body text-sm text-center">
-              Tải video dưới 150MB (MP4, MPEG, MOV, WebM)
+              Tải video dưới 100MB (MP4, MPEG, MOV, WebM)
             </p>
           </div>
         </label>

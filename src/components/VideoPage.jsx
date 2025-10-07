@@ -19,23 +19,6 @@ function VideoPage() {
   useEffect(() => {
     // Load video from backend API
     loadVideoFromBackend();
-    
-    // Listen for fullscreen changes
-    const handleFullscreenChange = () => {
-      console.log('Fullscreen changed:', !!document.fullscreenElement);
-    };
-    
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-    
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-    };
   }, [userId, token]);
 
   const loadVideoFromBackend = async () => {
@@ -108,28 +91,44 @@ function VideoPage() {
     
     if (!videoRef.current) return;
     
-    // Toggle fullscreen mode
-    if (!document.fullscreenElement) {
-      // Enter fullscreen
-      if (videoRef.current.requestFullscreen) {
-        videoRef.current.requestFullscreen();
-      } else if (videoRef.current.webkitRequestFullscreen) {
-        videoRef.current.webkitRequestFullscreen();
-      } else if (videoRef.current.mozRequestFullScreen) {
-        videoRef.current.mozRequestFullScreen();
-      } else if (videoRef.current.msRequestFullscreen) {
-        videoRef.current.msRequestFullscreen();
+    const videoElement = videoRef.current;
+    
+    // Check if currently in fullscreen
+    const isInFullscreen = !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement
+    );
+    
+    if (!isInFullscreen) {
+      // Enter fullscreen - try different methods
+      const enterFullscreen = 
+        videoElement.requestFullscreen ||
+        videoElement.webkitRequestFullscreen ||
+        videoElement.webkitEnterFullscreen || // iOS Safari
+        videoElement.mozRequestFullScreen ||
+        videoElement.msRequestFullscreen;
+      
+      if (enterFullscreen) {
+        enterFullscreen.call(videoElement).catch(err => {
+          console.log('Fullscreen error:', err);
+          toast.info('Không thể chuyển sang chế độ toàn màn hình');
+        });
       }
     } else {
       // Exit fullscreen
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+      const exitFullscreen = 
+        document.exitFullscreen ||
+        document.webkitExitFullscreen ||
+        document.webkitCancelFullScreen ||
+        document.mozCancelFullScreen ||
+        document.msExitFullscreen;
+      
+      if (exitFullscreen) {
+        exitFullscreen.call(document).catch(err => {
+          console.log('Exit fullscreen error:', err);
+        });
       }
     }
   };
@@ -137,17 +136,22 @@ function VideoPage() {
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#F4FFF8' }}>
       <style jsx global>{`
-        /* Hide default fullscreen button but allow fullscreen functionality */
         video::-webkit-media-controls-fullscreen-button {
           display: none !important;
         }
         video::-webkit-media-controls {
           overflow: visible !important;
         }
+        video {
+          -webkit-playsinline: true !important;
+          -moz-playsinline: true !important;
+          -ms-playsinline: true !important;
+          playsinline: true !important;
+        }
         video::-webkit-media-controls-panel {
           background: rgba(0,0,0,0.8) !important;
         }
-        /* Allow fullscreen but style it properly */
+        /* Style fullscreen video properly */
         video:fullscreen {
           object-fit: contain !important;
           background: black !important;
