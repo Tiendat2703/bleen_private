@@ -14,29 +14,38 @@ function VideoPage() {
   const [video, setVideo] = useState(null);
   const [showPlayButton, setShowPlayButton] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
     // Load video from backend API
     loadVideoFromBackend();
-    
-    // Listen for fullscreen changes
+  }, [userId, token]);
+
+  useEffect(() => {
+    // Listen for fullscreen change events
     const handleFullscreenChange = () => {
-      console.log('Fullscreen changed:', !!document.fullscreenElement);
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
+      setIsFullscreen(isCurrentlyFullscreen);
     };
-    
+
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
     document.addEventListener('mozfullscreenchange', handleFullscreenChange);
     document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-    
+
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
       document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
       document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
       document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
-  }, [userId, token]);
+  }, []);
 
   const loadVideoFromBackend = async () => {
     if (!userId || !token) {
@@ -106,103 +115,79 @@ function VideoPage() {
     e.preventDefault();
     e.stopPropagation();
     
+    // Completely prevent any fullscreen behavior
+    // Just do nothing on double click to avoid black screen
+    return false;
+  };
+
+  const toggleFullscreen = async () => {
     if (!videoRef.current) return;
-    
-    const videoElement = videoRef.current;
-    
-    // Check if currently in fullscreen
-    const isInFullscreen = !!(
-      document.fullscreenElement ||
-      document.webkitFullscreenElement ||
-      document.mozFullScreenElement ||
-      document.msFullscreenElement
-    );
-    
-    if (!isInFullscreen) {
-      // Enter fullscreen - try different methods
-      const enterFullscreen = 
-        videoElement.requestFullscreen ||
-        videoElement.webkitRequestFullscreen ||
-        videoElement.webkitEnterFullscreen || // iOS Safari
-        videoElement.mozRequestFullScreen ||
-        videoElement.msRequestFullscreen;
-      
-      if (enterFullscreen) {
-        enterFullscreen.call(videoElement).catch(err => {
-          console.log('Fullscreen error:', err);
-          toast.info('Không thể chuyển sang chế độ toàn màn hình');
-        });
+
+    try {
+      if (!isFullscreen) {
+        // Enter fullscreen
+        if (videoRef.current.requestFullscreen) {
+          await videoRef.current.requestFullscreen();
+        } else if (videoRef.current.webkitRequestFullscreen) {
+          await videoRef.current.webkitRequestFullscreen();
+        } else if (videoRef.current.mozRequestFullScreen) {
+          await videoRef.current.mozRequestFullScreen();
+        } else if (videoRef.current.msRequestFullscreen) {
+          await videoRef.current.msRequestFullscreen();
+        }
+        setIsFullscreen(true);
+      } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          await document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          await document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          await document.msExitFullscreen();
+        }
+        setIsFullscreen(false);
       }
-    } else {
-      // Exit fullscreen
-      const exitFullscreen = 
-        document.exitFullscreen ||
-        document.webkitExitFullscreen ||
-        document.webkitCancelFullScreen ||
-        document.mozCancelFullScreen ||
-        document.msExitFullscreen;
-      
-      if (exitFullscreen) {
-        exitFullscreen.call(document).catch(err => {
-          console.log('Exit fullscreen error:', err);
-        });
-      }
+    } catch (error) {
+      console.error('Fullscreen error:', error);
+      toast.error('Không thể chuyển chế độ toàn màn hình');
     }
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#F4FFF8' }}>
       <style jsx global>{`
-        /* Hide default fullscreen button but allow fullscreen functionality */
         video::-webkit-media-controls-fullscreen-button {
-          display: none !important;
-        }
-        /* Hide timeline/seek bar */
-        video::-webkit-media-controls-timeline {
-          display: none !important;
-        }
-        video::-webkit-media-controls-current-time-display {
-          display: none !important;
-        }
-        video::-webkit-media-controls-time-remaining-display {
           display: none !important;
         }
         video::-webkit-media-controls {
           overflow: visible !important;
         }
+        video {
+          -webkit-playsinline: true !important;
+          -moz-playsinline: true !important;
+          -ms-playsinline: true !important;
+          playsinline: true !important;
+        }
         video::-webkit-media-controls-panel {
           background: rgba(0,0,0,0.8) !important;
         }
-        /* Fullscreen styles */
+        /* Style fullscreen video properly */
         video:fullscreen {
           object-fit: contain !important;
           background: black !important;
-          width: 100vw !important;
-          height: 100vh !important;
         }
         video:-webkit-full-screen {
           object-fit: contain !important;
           background: black !important;
-          width: 100vw !important;
-          height: 100vh !important;
         }
         video:-moz-full-screen {
           object-fit: contain !important;
           background: black !important;
-          width: 100vw !important;
-          height: 100vh !important;
         }
         video:-ms-fullscreen {
           object-fit: contain !important;
-          background: black !important;
-          width: 100vw !important;
-          height: 100vh !important;
-        }
-        /* Container for fullscreen */
-        .video-container:fullscreen {
-          background: black !important;
-        }
-        .video-container:-webkit-full-screen {
           background: black !important;
         }
       `}</style>
@@ -248,7 +233,7 @@ function VideoPage() {
                   </p>
                 </div>
               ) : video ? (
-                <div className="relative w-full h-full video-container">
+                <div className="relative w-full h-full">
                   <video
                     ref={videoRef}
                     src={video.data}
@@ -263,7 +248,7 @@ function VideoPage() {
                     x5-video-player-type="h5"
                     x5-video-player-fullscreen="false"
                     x5-video-orientation="portraint"
-                    controlsList="nodownload noremoteplayback noseek"
+                    controlsList="nodownload nofullscreen noremoteplayback"
                     disablePictureInPicture
                   />
                   
@@ -287,6 +272,25 @@ function VideoPage() {
                       {Math.floor(video.duration / 60)}:{String(Math.floor(video.duration % 60)).padStart(2, '0')}
                     </div>
                   )}
+
+                  {/* Fullscreen Toggle Button */}
+                  <button
+                    onClick={toggleFullscreen}
+                    className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all"
+                    title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+                  >
+                    {isFullscreen ? (
+                      // Exit fullscreen icon
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    ) : (
+                      // Enter fullscreen icon
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center text-center p-8 h-full bg-gray-100">
@@ -310,3 +314,8 @@ function VideoPage() {
 }
 
 export default VideoPage;
+
+
+
+
+
