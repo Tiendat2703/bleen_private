@@ -12,15 +12,14 @@ function HomePage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsFingerprintComplete(true);
+      // Auto navigate to unlock page after fingerprint
+      setTimeout(() => {
+        navigate(`/${userId}/unlock`);
+      }, 1000); // Wait 1 second to show success message
     }, 2000); // 2 seconds for fingerprint scan
 
     return () => clearTimeout(timer);
-  }, []);
-
-  const handleFingerprintComplete = () => {
-    // Navigate to unlock page after fingerprint
-    navigate(`/${userId}/unlock`);
-  };
+  }, [userId, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: '#F4FFF8' }}>
@@ -72,15 +71,9 @@ function HomePage() {
               <h2 className="text-2xl font-bold text-green-600 mb-2">
                 Vân tay đã được xác thực!
               </h2>
-              <p className="text-gray-600 mb-4">
-                Bây giờ hãy nhập mã PIN để tiếp tục
+              <p className="text-gray-600">
+                Đang chuyển đến trang nhập mã PIN...
               </p>
-              <button
-                onClick={handleFingerprintComplete}
-                className="bg-primary-teal text-white px-8 py-3 rounded-full font-semibold hover:bg-teal-600 transition-colors"
-              >
-                Tiếp tục
-              </button>
             </>
           )}
         </div>
