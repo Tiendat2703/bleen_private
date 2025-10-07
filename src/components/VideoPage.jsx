@@ -94,6 +94,23 @@ function VideoPage() {
     return false;
   };
 
+  const handleVideoClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        // If video is paused, play it
+        videoRef.current.play();
+        setShowPlayButton(false);
+      } else {
+        // If video is playing, pause it
+        videoRef.current.pause();
+        setShowPlayButton(true);
+      }
+    }
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#F4FFF8' }}>
       <style jsx global>{`
@@ -176,7 +193,8 @@ function VideoPage() {
                     onPlay={handleVideoPlay}
                     onPause={handleVideoPause}
                     onDoubleClick={handleVideoDoubleClick}
-                    className="w-full h-full object-cover"
+                    onClick={handleVideoClick}
+                    className="w-full h-full object-cover cursor-pointer"
                     playsInline
                     webkit-playsinline="true"
                     x5-playsinline="true"
