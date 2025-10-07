@@ -149,11 +149,11 @@ function VideoPage() {
         </button>
       </div>
 
-      {/* Main Container - Full width like MessagesPage */}
-      <div className="absolute bg-[#d9ffe8] h-[680px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[400px]" data-node-id="0:1223" />
+      {/* Main Container - Reduced height to avoid browser UI */}
+      <div className="absolute bg-[#d9ffe8] h-[650px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[400px]" data-node-id="0:1223" />
       
       {/* Video player container */}
-      <div className="absolute top-[182px] left-1/2 transform -translate-x-1/2 w-[320px] h-[608px] rounded-t-[160px] overflow-hidden">
+      <div className="absolute top-[182px] left-1/2 transform -translate-x-1/2 w-[320px] h-[526px] rounded-t-[160px] overflow-hidden">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center text-center p-8 h-full bg-gray-100">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-teal mb-4"></div>
