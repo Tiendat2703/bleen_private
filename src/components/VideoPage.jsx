@@ -19,6 +19,23 @@ function VideoPage() {
   useEffect(() => {
     // Load video from backend API
     loadVideoFromBackend();
+    
+    // Listen for fullscreen changes
+    const handleFullscreenChange = () => {
+      console.log('Fullscreen changed:', !!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
   }, [userId, token]);
 
   const loadVideoFromBackend = async () => {
@@ -89,24 +106,30 @@ function VideoPage() {
     e.preventDefault();
     e.stopPropagation();
     
-    // Completely prevent any fullscreen behavior
-    // Just do nothing on double click to avoid black screen
-    return false;
-  };
-
-  const handleVideoClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (!videoRef.current) return;
     
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        // If video is paused, play it
-        videoRef.current.play();
-        setShowPlayButton(false);
-      } else {
-        // If video is playing, pause it
-        videoRef.current.pause();
-        setShowPlayButton(true);
+    // Toggle fullscreen mode
+    if (!document.fullscreenElement) {
+      // Enter fullscreen
+      if (videoRef.current.requestFullscreen) {
+        videoRef.current.requestFullscreen();
+      } else if (videoRef.current.webkitRequestFullscreen) {
+        videoRef.current.webkitRequestFullscreen();
+      } else if (videoRef.current.mozRequestFullScreen) {
+        videoRef.current.mozRequestFullScreen();
+      } else if (videoRef.current.msRequestFullscreen) {
+        videoRef.current.msRequestFullscreen();
+      }
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
       }
     }
   };
@@ -114,33 +137,32 @@ function VideoPage() {
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: '#F4FFF8' }}>
       <style jsx global>{`
+        /* Hide default fullscreen button but allow fullscreen functionality */
         video::-webkit-media-controls-fullscreen-button {
           display: none !important;
         }
         video::-webkit-media-controls {
           overflow: visible !important;
         }
-        video {
-          -webkit-playsinline: true !important;
-          -moz-playsinline: true !important;
-          -ms-playsinline: true !important;
-          playsinline: true !important;
-        }
         video::-webkit-media-controls-panel {
           background: rgba(0,0,0,0.8) !important;
         }
-        /* Prevent fullscreen completely */
+        /* Allow fullscreen but style it properly */
         video:fullscreen {
-          display: none !important;
+          object-fit: contain !important;
+          background: black !important;
         }
         video:-webkit-full-screen {
-          display: none !important;
+          object-fit: contain !important;
+          background: black !important;
         }
         video:-moz-full-screen {
-          display: none !important;
+          object-fit: contain !important;
+          background: black !important;
         }
         video:-ms-fullscreen {
-          display: none !important;
+          object-fit: contain !important;
+          background: black !important;
         }
       `}</style>
       <MenuSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
@@ -193,8 +215,7 @@ function VideoPage() {
                     onPlay={handleVideoPlay}
                     onPause={handleVideoPause}
                     onDoubleClick={handleVideoDoubleClick}
-                    onClick={handleVideoClick}
-                    className="w-full h-full object-cover cursor-pointer"
+                    className="w-full h-full object-cover"
                     playsInline
                     webkit-playsinline="true"
                     x5-playsinline="true"
