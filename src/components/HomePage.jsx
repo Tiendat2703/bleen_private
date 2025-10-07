@@ -13,30 +13,43 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: '#F4FFF8' }}>
-      {/* Logo Section */}
-      <div className="mb-20">
+    <div className="min-h-screen relative" style={{ backgroundColor: '#F4FFF8' }}>
+      {/* Logo chính - Fixed position */}
+      <div 
+        className="absolute"
+        style={{
+          width: '364px',
+          height: '364px',
+          top: '147px',
+          left: '14px'
+        }}
+      >
         <img 
           src={logoImage} 
           alt="21 Bleen Studio" 
-          className="w-auto object-contain"
+          className="w-full h-full object-contain"
           style={{ 
-            height: '180px',
             filter: 'none',
             imageRendering: 'high-quality'
           }}
         />
       </div>
 
-      {/* Fingerprint Icon - Clickable */}
+      {/* Fingerprint Icon - Fixed position */}
       <button 
         onClick={handleFingerprintClick}
-        className="hover:scale-105 transition-transform cursor-pointer"
+        className="absolute hover:scale-105 transition-transform cursor-pointer"
+        style={{
+          width: '56px',
+          height: '62px',
+          top: '679px',
+          left: '169px'
+        }}
       >
         <img 
           src={vectorIcon} 
           alt="Fingerprint" 
-          className="w-12 h-12"
+          className="w-full h-full object-contain"
         />
       </button>
     </div>
