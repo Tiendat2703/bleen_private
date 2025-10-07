@@ -163,7 +163,7 @@ function MessagesPage() {
       </div>
       
       {/* Main Container */}
-      <div className="absolute bg-[#d9ffe8] h-[732px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[90px] w-[400px]" data-node-id="0:1223" />
+      <div className="absolute bg-[#d9ffe8] h-[680px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[90px] w-[400px]" data-node-id="0:1223" />
       
       {/* Message Text */}
       <div className="absolute flex flex-col font-['Quicksand:Bold',_sans-serif] font-bold justify-center leading-[normal] right-1/2 translate-x-1/2 text-[#17b3c1] text-[14px] top-[371px] translate-y-[-50%] w-[280px]" data-node-id="0:1224">

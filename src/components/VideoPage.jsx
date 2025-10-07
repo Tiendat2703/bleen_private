@@ -150,7 +150,7 @@ function VideoPage() {
       </div>
 
       {/* Main Container - Full width like MessagesPage */}
-      <div className="absolute bg-[#d9ffe8] h-[732px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[400px]" data-node-id="0:1223" />
+      <div className="absolute bg-[#d9ffe8] h-[680px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[400px]" data-node-id="0:1223" />
       
       {/* Video player container */}
       <div className="absolute top-[182px] left-1/2 transform -translate-x-1/2 w-[320px] h-[608px] rounded-t-[160px] overflow-hidden">
