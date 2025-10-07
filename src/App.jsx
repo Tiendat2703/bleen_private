@@ -52,13 +52,6 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const NavigateWithUserId = () => {
-  const { userId } = useParams();
-  console.log('NavigateWithUserId - userId:', userId);
-  console.log('Current URL:', window.location.href);
-  console.log('Redirecting to:', `/${userId}/home`);
-  return <Navigate to={`/${userId}/home`} replace />;
-};
 
 const AppRoutes = () => {
   return (
@@ -73,13 +66,13 @@ const AppRoutes = () => {
         </PublicRoute>
       } />
       
-      {/* Default userId route - redirect to unlock */}
-      <Route path="/:userId" element={<NavigateWithUserId />} />
+      {/* Default userId route - show HomePage with fingerprint */}
+      <Route path="/:userId" element={<HomePage />} />
       
       {/* Protected routes */}
       <Route path="/:userId/home" element={
         <ProtectedRoute>
-          <HomePage />
+          <HomeAfterUnlock />
         </ProtectedRoute>
       } />
       
