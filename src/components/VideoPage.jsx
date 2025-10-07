@@ -31,8 +31,6 @@ function VideoPage() {
         document.mozFullScreenElement ||
         document.msFullscreenElement
       );
-      console.log('Fullscreen change detected:', isCurrentlyFullscreen);
-      console.log('Current fullscreen element:', document.fullscreenElement);
       setIsFullscreen(isCurrentlyFullscreen);
     };
 
@@ -117,9 +115,8 @@ function VideoPage() {
     e.preventDefault();
     e.stopPropagation();
     
-    // Completely prevent any fullscreen behavior
-    // Just do nothing on double click to avoid black screen
-    return false;
+    // Toggle fullscreen on double click
+    toggleFullscreen();
   };
 
   const toggleFullscreen = async () => {
@@ -127,7 +124,6 @@ function VideoPage() {
 
     try {
       if (!isFullscreen) {
-        console.log('Entering fullscreen...');
         // Enter fullscreen
         if (videoRef.current.requestFullscreen) {
           await videoRef.current.requestFullscreen();
@@ -138,10 +134,8 @@ function VideoPage() {
         } else if (videoRef.current.msRequestFullscreen) {
           await videoRef.current.msRequestFullscreen();
         }
-        // Don't set state here, let the event listener handle it
-        console.log('Fullscreen request sent');
+        setIsFullscreen(true);
       } else {
-        console.log('Exiting fullscreen...');
         // Exit fullscreen
         if (document.exitFullscreen) {
           await document.exitFullscreen();
@@ -152,7 +146,7 @@ function VideoPage() {
         } else if (document.msExitFullscreen) {
           await document.msExitFullscreen();
         }
-        console.log('Exit fullscreen request sent');
+        setIsFullscreen(false);
       }
     } catch (error) {
       console.error('Fullscreen error:', error);
@@ -253,13 +247,12 @@ function VideoPage() {
                     x5-video-player-type="h5"
                     x5-video-player-fullscreen="false"
                     x5-video-orientation="portraint"
-                    controlsList="nodownload nofullscreen noremoteplayback"
-                    disablePictureInPicture
+                    controlsList="nodownload noremoteplayback"
                   />
                   
                   {/* Custom Play Button Overlay */}
                   {showPlayButton && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
                       <button
                         onClick={handlePlayClick}
                         className="w-16 h-16 bg-primary-teal rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
@@ -278,18 +271,24 @@ function VideoPage() {
                     </div>
                   )}
 
-                  {/* Fullscreen Toggle Button - Only show when not in fullscreen */}
-                  {!isFullscreen && (
-                    <button
-                      onClick={toggleFullscreen}
-                      className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all"
-                      title="Toàn màn hình"
-                    >
+                  {/* Fullscreen Toggle Button */}
+                  <button
+                    onClick={toggleFullscreen}
+                    className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all"
+                    title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+                  >
+                    {isFullscreen ? (
+                      // Exit fullscreen icon
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    ) : (
+                      // Enter fullscreen icon
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                       </svg>
-                    </button>
-                  )}
+                    )}
+                  </button>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center text-center p-8 h-full bg-gray-100">
@@ -305,26 +304,6 @@ function VideoPage() {
                 </div>
               )}
       </div>
-
-      {/* Debug: Show fullscreen state */}
-      <div className="fixed top-4 left-4 z-50 bg-black bg-opacity-70 text-white p-2 rounded text-xs">
-        Fullscreen: {isFullscreen ? 'YES' : 'NO'}
-      </div>
-
-      {/* Fullscreen Exit Button - Only show when in fullscreen */}
-      {isFullscreen && (
-        <div className="fixed top-4 right-4 z-50">
-          <button
-            onClick={toggleFullscreen}
-            className="bg-black bg-opacity-70 text-white p-3 rounded-full hover:bg-opacity-90 transition-all shadow-lg"
-            title="Thoát toàn màn hình"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      )}
 
       {/* Navigation Arrows */}
       <NavigationArrows />
