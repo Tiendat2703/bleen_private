@@ -119,39 +119,9 @@ function VideoPage() {
     toggleFullscreen();
   };
 
-  const toggleFullscreen = async () => {
-    if (!videoRef.current) return;
-
-    try {
-      if (!isFullscreen) {
-        // Enter fullscreen
-        if (videoRef.current.requestFullscreen) {
-          await videoRef.current.requestFullscreen();
-        } else if (videoRef.current.webkitRequestFullscreen) {
-          await videoRef.current.webkitRequestFullscreen();
-        } else if (videoRef.current.mozRequestFullScreen) {
-          await videoRef.current.mozRequestFullScreen();
-        } else if (videoRef.current.msRequestFullscreen) {
-          await videoRef.current.msRequestFullscreen();
-        }
-        setIsFullscreen(true);
-      } else {
-        // Exit fullscreen
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          await document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-          await document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-          await document.msExitFullscreen();
-        }
-        setIsFullscreen(false);
-      }
-    } catch (error) {
-      console.error('Fullscreen error:', error);
-      toast.error('Không thể chuyển chế độ toàn màn hình');
-    }
+  const toggleFullscreen = () => {
+    // Toggle between normal size and 3/4 screen size
+    setIsFullscreen(!isFullscreen);
   };
 
   return (
@@ -172,21 +142,9 @@ function VideoPage() {
         video::-webkit-media-controls-panel {
           background: rgba(0,0,0,0.8) !important;
         }
-        /* Style fullscreen video properly */
-        video:fullscreen {
-          object-fit: contain !important;
-          background: black !important;
-        }
-        video:-webkit-full-screen {
-          object-fit: contain !important;
-          background: black !important;
-        }
-        video:-moz-full-screen {
-          object-fit: contain !important;
-          background: black !important;
-        }
-        video:-ms-fullscreen {
-          object-fit: contain !important;
+        /* Custom large video styling */
+        .video-large {
+          object-fit: cover !important;
           background: black !important;
         }
       `}</style>
@@ -223,7 +181,11 @@ function VideoPage() {
       <div className="absolute bg-[#d9ffe8] h-[650px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[120px] w-[400px]" data-node-id="0:1223" />
       
       {/* Video player container */}
-      <div className="absolute top-[182px] left-1/2 transform -translate-x-1/2 w-[320px] h-[526px] rounded-t-[160px] overflow-hidden">
+      <div className={`absolute left-1/2 transform -translate-x-1/2 rounded-t-[160px] overflow-hidden transition-all duration-300 ${
+        isFullscreen 
+          ? 'top-[10%] w-[90vw] h-[70vh]' 
+          : 'top-[182px] w-[320px] h-[526px]'
+      }`}>
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center text-center p-8 h-full bg-gray-100">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-teal mb-4"></div>
@@ -240,7 +202,7 @@ function VideoPage() {
                     onPlay={handleVideoPlay}
                     onPause={handleVideoPause}
                     onDoubleClick={handleVideoDoubleClick}
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full object-cover ${isFullscreen ? 'video-large' : ''}`}
                     playsInline
                     webkit-playsinline="true"
                     x5-playsinline="true"
@@ -271,19 +233,19 @@ function VideoPage() {
                     </div>
                   )}
 
-                  {/* Fullscreen Toggle Button */}
+                  {/* Size Toggle Button */}
                   <button
                     onClick={toggleFullscreen}
                     className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90 transition-all z-20"
-                    title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+                    title={isFullscreen ? "Thu nhỏ video" : "Phóng to video"}
                   >
                     {isFullscreen ? (
-                      // Exit fullscreen icon
+                      // Shrink icon
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.5 3.5M15 9h4.5M15 9V4.5M15 9l5.5-5.5M9 15v4.5M9 15H4.5M9 15l-5.5 5.5M15 15h4.5M15 15v4.5M15 15l5.5 5.5" />
                       </svg>
                     ) : (
-                      // Enter fullscreen icon
+                      // Expand icon
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                       </svg>
