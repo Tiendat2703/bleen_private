@@ -166,17 +166,17 @@ function MessagesPage() {
       <div className="absolute bg-[#d9ffe8] h-[732px] right-1/2 translate-x-1/2 rounded-tl-[196.5px] rounded-tr-[196.5px] top-[90px] w-[400px]" data-node-id="0:1223" />
       
       {/* Message Text */}
-      <div className="absolute flex flex-col font-['Quicksand:Bold',_sans-serif] font-bold justify-center leading-[normal] right-1/2 translate-x-1/2 text-[#17b3c1] text-[14px] top-[371px] translate-y-[-50%] w-[280px]" data-node-id="0:1224">
+      <div className="absolute flex flex-col font-body font-bold justify-center leading-[normal] right-1/2 translate-x-1/2 text-[#17b3c1] text-[14px] top-[371px] translate-y-[-50%] w-[280px]" data-node-id="0:1224">
         {isLoading ? (
           <p className="mb-0 text-center">Đang tải thông điệp...</p>
         ) : message ? (
-          <p className="mb-0 whitespace-pre-wrap">{message}</p>
+          <p className="mb-0 whitespace-pre-wrap text-justify">{message}</p>
         ) : (
           <>
-            <p className="mb-0">Gửi đến người nhận được chiếc thẻ này,</p>
-            <p className="mb-0">Mình muốn bạn biết rằng bạn thật đặc biệt trong cuộc đời mình. Mỗi khi chạm vào thẻ, hãy nhớ rằng ở đâu đó có một người luôn trân trọng, luôn nghĩ về bạn, và mong bạn bình an, hạnh phúc.</p>
+            <p className="mb-0 text-justify">Gửi đến người nhận được chiếc thẻ này!</p>
+            <p className="mb-0 text-justify">Mình muốn bạn biết rằng bạn thật đặc biệt trong cuộc đời mình. Mỗi khi chạm vào thẻ, hãy nhớ rằng ở đâu đó có một người luôn trân trọng, luôn nghĩ về bạn, và mong bạn bình an, hạnh phúc.</p>
             <p className="mb-0">&nbsp;</p>
-            <p>Dù cuộc sống có bận rộn đến đâu, hãy dành một chút thời gian yêu thương chính mình và tin rằng bạn chưa bao giờ một mình.</p>
+            <p className="text-justify">Dù cuộc sống có bận rộn đến đâu, hãy dành một chút thời gian yêu thương chính mình và tin rằng bạn chưa bao giờ một mình.</p>
           </>
         )}
       </div>
